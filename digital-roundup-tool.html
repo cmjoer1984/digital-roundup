@@ -313,6 +313,9 @@
   }
   .total-label { font-size: 13px; color: var(--text-muted); }
   .total-val { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; color: var(--accent); }
+  .sticky-total { position: sticky; bottom: 0; background: var(--navy); border-top: 1px solid var(--border); padding: 10px 20px; z-index: 10; display: flex; justify-content: space-between; align-items: baseline; }
+  .sticky-total-label { font-size: 13px; color: var(--text-muted); }
+  .sticky-total-val { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; color: var(--accent); }
 
   /* Notes */
   .notes-box {
@@ -367,7 +370,8 @@
   .bundle-card-price { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text-dim); margin-top: 6px; }
   .bundle-check { width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--border); background: none; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; margin-right: 2px; }
   .bundle-card.selected .bundle-check { background: var(--accent); border-color: var(--accent); color: var(--navy); }
-  .bundle-tally { position: sticky; bottom: 0; background: var(--navy); border-top: 1px solid var(--border); padding: 16px 0 20px; margin-top: 8px; }
+  .bundle-tally { margin-top: 8px; }
+  .bundle-tally-sticky { position: sticky; bottom: 0; background: var(--navy); border-top: 1px solid var(--border); padding: 10px 0; z-index: 10; margin: 0 -24px; padding: 10px 24px; }
   .bundle-tally-inner { display: flex; justify-content: space-between; align-items: center; }
   .bundle-tally-label { font-size: 13px; color: var(--text-muted); }
   .bundle-tally-numbers { display: flex; align-items: baseline; gap: 16px; }
@@ -385,6 +389,45 @@
   .bundle-custom-remove { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 12px; padding: 2px 4px; }
   .bundle-custom-remove:hover { color: #E24B4A; }
 
+  /* Rate editor */
+  .rate-edit-row { display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap; }
+  .rate-edit-label { font-size:11px;color:var(--text-dim); }
+  .rate-input { font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);background:none;
+    border:none;border-bottom:1px dashed var(--accent-border);outline:none;width:60px;padding:1px 3px; }
+  .rate-input:focus { border-bottom-color:var(--accent); }
+  .rate-save-btn { font-size:11px;padding:2px 8px;border-radius:4px;border:1px solid var(--border);
+    background:none;color:var(--text-dim);cursor:pointer;font-family:'DM Sans',sans-serif; }
+  .rate-save-btn:hover { border-color:var(--accent);color:var(--accent); }
+
+  /* Month tiers */
+  .month-tier-section { margin-top:24px;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:4px; }
+  .month-tier-row { display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px; }
+  .month-btn { padding:7px 16px;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;
+    border:1px solid var(--border);background:var(--card);color:var(--text-muted);cursor:pointer;transition:all .18s; }
+  .month-btn.active { background:var(--selected-bg);border-color:var(--selected-border);color:var(--accent);font-weight:500; }
+  .discount-row { display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted);flex-wrap:wrap; }
+  .discount-input { font-family:'DM Mono',monospace;font-size:14px;color:var(--accent);background:none;
+    border:none;border-bottom:1px dashed var(--accent-border);outline:none;width:45px;padding:1px 3px;text-align:center; }
+  .discount-input:focus { border-bottom-color:var(--accent); }
+  .commitment-box { background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:8px;
+    padding:10px 14px;margin-top:10px;font-size:13px; }
+  .commitment-total { font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--accent); }
+
+  /* ROI calculator */
+  .roi-section { margin-top:12px;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:10px; }
+  .roi-toggle-row { display:flex;align-items:center;gap:10px;margin-bottom:0; }
+  .roi-fields { margin-top:12px; }
+  .roi-result { font-size:13px;color:var(--text-muted);margin-top:8px;line-height:1.6; }
+  .roi-highlight { color:var(--accent);font-weight:500;font-family:'DM Mono',monospace; }
+
+  /* Website / Social cards */
+  .sub-option-row { display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;margin-top:8px; }
+  .sub-opt { padding:5px 12px;border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;
+    border:1px solid var(--border);background:var(--card);color:var(--text-muted);cursor:pointer;transition:all .15s; }
+  .sub-opt.selected { background:var(--selected-bg);border-color:var(--selected-border);color:var(--accent); }
+  .bpl-link { font-size:11px;color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-top:4px; }
+  .bpl-link:hover { text-decoration:underline; }
+
   @media (max-width: 520px) {
     .page { padding: 32px 16px 60px; }
     .header h1 { font-size: 24px; }
@@ -395,16 +438,36 @@
 <div class="page">
 
   <div class="header">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
       <input type="text" id="pub-name" value="Boone Newsmedia"
         style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
                color:var(--accent);background:none;border:none;border-bottom:1px dashed var(--accent-border);
                outline:none;padding:2px 4px;width:220px;"
-        title="Edit to white-label for your publication" oninput="document.getElementById('footer-pub').textContent=this.value+' Digital Services'">
+        title="Publication name" oninput="onPubNameChange(this.value)">
       <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);">· Digital Services</span>
     </div>
     <h1>Digital RoundUp<br>Rep Tool</h1>
-    <p style="font-size:12px;color:var(--text-dim);margin-top:4px;">Edit the publication name above to white-label client summaries.</p>
+    <div style="margin-top:14px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Your info (populates client summary)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <div style="font-size:11px;color:var(--text-dim);margin-bottom:3px;">Name</div>
+          <input type="text" class="type-input" id="rep-name" placeholder="Your name" oninput="repInfo.name=this.value" style="font-size:12px;padding:5px 8px;">
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text-dim);margin-bottom:3px;">Email</div>
+          <input type="text" class="type-input" id="rep-email" placeholder="your@email.com" oninput="repInfo.email=this.value" style="font-size:12px;padding:5px 8px;">
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text-dim);margin-bottom:3px;">Phone</div>
+          <input type="text" class="type-input" id="rep-phone" placeholder="(555) 555-5555" oninput="repInfo.phone=this.value" style="font-size:12px;padding:5px 8px;">
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text-dim);margin-bottom:3px;">Website (used for Local Site & Newsletter)</div>
+          <input type="text" class="type-input" id="rep-website" placeholder="e.g. boonenewsmedia.com" oninput="repInfo.website=this.value" style="font-size:12px;padding:5px 8px;">
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="mode-toggle">
@@ -517,14 +580,48 @@
     </div>
 
     <div class="bundle-tally">
-      <div class="bundle-tally-inner">
-        <div>
-          <div class="bundle-tally-label">Monthly total</div>
-          <div class="bundle-tally-total" id="bundle-total">$0</div>
+      <div class="bundle-tally-sticky">
+        <div class="bundle-tally-inner">
+          <div>
+            <div class="bundle-tally-label">Monthly total</div>
+            <div class="bundle-tally-total">
+              <span id="bundle-sticky-total">$0</span><span id="bundle-total" style="display:none;">$0</span>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div class="bundle-tally-label">vs. budget</div>
+            <div class="bundle-tally-remaining" id="bundle-remaining">
+              <span id="bundle-sticky-diff">—</span>
+            </div>
+          </div>
         </div>
-        <div style="text-align:right;">
-          <div class="bundle-tally-label">vs. budget</div>
-          <div class="bundle-tally-remaining" id="bundle-remaining">—</div>
+      </div>
+
+      <div class="month-tier-section" style="margin-top:12px;">
+        <div class="step-label" style="margin-bottom:12px;">Commitment options — shown on client summary</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;" id="bundle-commitment-grid"></div>
+      </div>
+
+      <div class="roi-section" style="margin-top:12px;margin-bottom:12px;">
+        <div class="roi-toggle-row">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text-muted);">
+            <input type="checkbox" id="bundle-roi-checkbox" onchange="toggleROI(this.checked)" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer;">
+            ROI / break-even calculator
+          </label>
+        </div>
+        <div id="roi-fields-bundle" style="display:none;">
+          <div class="price-label" style="margin:10px 0 4px;">Client's average transaction value</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:14px;color:var(--text-muted);">$</span>
+            <input type="text" class="type-input" style="width:140px;" placeholder="e.g. 85"
+              value="${roiAvgTransaction || ''}"
+              oninput="onROITransaction(this.value)">
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);cursor:pointer;">
+              <input type="checkbox" ${roiIncludeInSummary?'checked':''} onchange="toggleROISummary(this.checked)" style="width:12px;height:12px;accent-color:var(--accent);">
+              Include in client summary
+            </label>
+          </div>
+          <div class="roi-result" id="roi-result" style="margin-top:8px;font-size:13px;color:var(--text-muted);"></div>
         </div>
       </div>
       <button class="summary-btn" style="margin-top:14px;width:100%;justify-content:center;" onclick="bundleOpenSummary()">&#9634; Generate client summary</button>
@@ -538,6 +635,32 @@
 </div>
 
 <script>
+// ── Early declarations (used in HTML oninput handlers) ──────────────
+let repInfo = { name: '', email: '', phone: '', website: '' };
+let localsiteName = '';
+let localsiteCpm = 10;  // default $10 CPM retail
+let newsletterOpenRate = '';  // optional open rate for newsletter
+let doohImprOverride = '';   // manual impressions from Vistar spec
+let doohRevEcpm   = '';      // Revenue eCPM from Vistar spec
+let doohMediaEcpm = '';      // Media eCPM from Vistar spec
+let fbImprOverride = '';     // manual impressions from Ads Manager
+let simpliWholesaleCpm = 3;  // wholesale CPM paid to Simpli.fi
+// Per-tier bonus fields: { 3: {simpli_bonus, dooh_note, fb_note, sem_note}, 6: {...}, 12: {...} }
+let tierBonuses = { 3: {}, 6: {}, 12: {} };
+let tierNameOverride = '';
+let dropdownOpen = false;
+
+let _commitmentDebounce = null;
+function debouncedCommitmentUpdate() {
+  clearTimeout(_commitmentDebounce);
+  _commitmentDebounce = setTimeout(updateCommitmentBox, 400);
+}
+
+function onPubNameChange(val) {
+  const el = document.getElementById('footer-pub');
+  if (el) el.textContent = val + ' Digital Services';
+}
+
 const state = { budget: 750 };
 const QUESTIONS = ['type','goal','site'];
 
@@ -572,60 +695,107 @@ function reset() {
 }
 
 // ── Product catalog ──────────────────────────────────────────────────
+// ── Custom retail rates (saved to localStorage) ──────────────────────
+const DEFAULT_RATES = {
+  simpli_cpm:     10,
+  dooh_ecpm_low:  15,
+  dooh_ecpm_high: 25,
+  fb_cpm_low:     0.02,
+  fb_cpm_high:    0.05,
+  sem_cpc_low:    2,
+  sem_cpc_high:   4,
+  fb_markup:      100,   // % markup — 100% means half goes to FB spend
+  sem_markup:     100,
+};
+let customRates = {};
+function loadRates() {
+  try {
+    const saved = localStorage.getItem('bnm_rates');
+    customRates = saved ? { ...DEFAULT_RATES, ...JSON.parse(saved) } : { ...DEFAULT_RATES };
+  } catch(e) { customRates = { ...DEFAULT_RATES }; }
+}
+function saveRate(key, val) {
+  customRates[key] = val;
+  try { localStorage.setItem('bnm_rates', JSON.stringify(customRates)); } catch(e) {}
+}
+function getRate(key) { return customRates[key] !== undefined ? customRates[key] : DEFAULT_RATES[key]; }
+loadRates();
+
 const PRODUCTS = {
-  dooh:       { name: 'DOOH — Vistar Media',           engine: 'Attention',  tag: 'tag-blue',   minPrice: 300,
+  dooh:       { name: 'DOOH — Vistar Media', clientName: 'Digital Out of Home (DOOH)',           engine: 'Attention',  tag: 'tag-blue',   minPrice: 300,
     impressionNote: (b) => {
-      // Vistar is variable — conservative estimate ~$15–25 eCPM on avg
-      const imprLow  = Math.round(b / 25 * 1000 / 1000);   // at $25 eCPM
-      const imprHigh = Math.round(b / 15 * 1000 / 1000);   // at $15 eCPM
-      return `~${imprLow}k–${imprHigh}k screen impressions/mo (varies by market, screens & timing)`;
+      if (doohImprOverride) {
+        const margin = (doohRevEcpm && doohMediaEcpm)
+          ? ` · Your cost: $${Math.round(parseFloat(doohMediaEcpm)/parseFloat(doohRevEcpm)*b)} · Margin: $${Math.round((1-parseFloat(doohMediaEcpm)/parseFloat(doohRevEcpm))*b)}`
+          : '';
+        return `${doohImprOverride} impressions/mo${margin}`;
+      }
+      return `Enter impressions from Vistar spec below`;
     },
     clientDesc: 'Your brand on digital billboards and screens across the market — reaches people everywhere they go.' },
-  simpli:     { name: 'Targeted Display — Simpli.fi',   engine: 'Frequency',  tag: 'tag-green',  minPrice: 250,
+  simpli:     { name: 'Targeted Display — Simpli.fi', clientName: 'Targeted Display',   engine: 'Frequency',  tag: 'tag-green',  minPrice: 250,
     impressionNote: (b) => {
-      // Straight rate card math: $10 CPM retail
-      const impr = Math.max(25000, Math.round(b / 10 * 1000));
-      return `~${(impr/1000).toFixed(0)}k targeted impressions/mo at $10 CPM (min 25k)`;
+      const retailCpm = getRate('simpli_cpm');
+      const impr = Math.max(25000, Math.round(b / retailCpm * 1000));
+      return `~${(impr/1000).toFixed(0)}k targeted impressions/mo`;
+    },
+    repNote: (b) => {
+      const retailCpm = getRate('simpli_cpm');
+      const impr = Math.max(25000, Math.round(b / retailCpm * 1000));
+      const wholesale = simpliWholesaleCpm || 3;
+      const cost = Math.round(impr / 1000 * wholesale);
+      return `~${(impr/1000).toFixed(0)}k impressions · Your cost: $${cost} ($${wholesale}/CPM wholesale) · Margin: $${b-cost}`;
     },
     clientDesc: 'Targeted banner ads that follow your ideal customers around the web based on their browsing behavior and location.' },
-  localsite:  { name: 'Local Site Ads',                 engine: 'Trust',      tag: 'tag-teal',   minPrice: 150,
-    impressionNote: (b) => `Placement on trusted local news sites — impressions vary by publication and placement`,
+  localsite:  { name: 'Local Site Ads', clientName: 'Local News Site Ads',                 engine: 'Trust',      tag: 'tag-teal',   minPrice: 150,
+    impressionNote: (b) => { const cpm = localsiteCpm || 10; const impr = Math.round(b / cpm * 1000); return `~${(impr/1000).toFixed(0)}k impressions/mo`; },
+    repNote: (b) => { const cpm = localsiteCpm || 10; const impr = Math.round(b / cpm * 1000); return `~${(impr/1000).toFixed(0)}k impressions at $${cpm} CPM`; },
     clientDesc: 'Display ads on our trusted local news sites — reaching engaged community members who already rely on us for information.' },
-  prospect:   { name: 'Prospect ID — Lead Capture',     engine: 'Conversion', tag: 'tag-amber',  minPrice: 250,
+  prospect:   { name: 'Prospect ID — Lead Capture', clientName: 'Lead Capture',     engine: 'Conversion', tag: 'tag-amber',  minPrice: 250,
     impressionNote: (b) => {
       // Leads depend on site traffic, not budget — conservative estimate
       return `Identifies anonymous site visitors as leads + triggers automated 5-email follow-up sequence`;
     },
     clientDesc: 'Identifies visitors to your website by name, email, and buying intent — and automatically follows up with a personalized email sequence.' },
-  fb:         { name: 'Facebook / Meta Ads',            engine: 'Social',     tag: 'tag-purple', minPrice: 200,
+  fb:         { name: 'Facebook / Meta Ads', clientName: 'Facebook / Meta Ads',            engine: 'Social',     tag: 'tag-purple', minPrice: 200,
     impressionNote: (b) => {
-      // FB reach varies wildly — conservative $0.02–0.05 CPM equivalent for local audiences
-      const imprLow  = Math.round(b / 0.05 / 1000);  // conservative end
-      const imprHigh = Math.round(b / 0.02 / 1000);  // optimistic end
-      return `Est. ${imprLow}k–${imprHigh}k impressions/mo (FB reach varies — actual results may differ)`;
+      if (fbImprOverride) return `${fbImprOverride} impressions/mo — actual reach confirmed at campaign setup`;
+      return `Est. 3k–16k+ impressions/mo — actual reach confirmed after targeting is set up`;
+    },
+    repNote: (b) => {
+      const markup = getRate('fb_markup') / 100;
+      const adSpend = Math.round(b / (1 + markup));
+      const youKeep = b - adSpend;
+      if (fbImprOverride) return `${fbImprOverride} impressions · $${adSpend} to FB, $${youKeep} to you`;
+      return `$${adSpend} to FB ad spend, $${youKeep} to you`;
     },
     clientDesc: 'Targeted ads on Facebook and Instagram reaching your ideal customers by demographics, interests, and location.' },
-  email:      { name: 'Targeted Email — Site Impact',   engine: 'Reach',      tag: 'tag-purple', minPrice: null, isEmail: true,
+  email:      { name: 'Targeted Email — Site Impact', clientName: 'Targeted Email',   engine: 'Reach',      tag: 'tag-purple', minPrice: null, isEmail: true,
     clientDesc: 'A targeted email blast sent to a curated list of local consumers who match your customer profile.' },
-  sem:        { name: 'Search / SEM',                   engine: 'Intent',     tag: 'tag-green',  minPrice: 300,
+  sem:        { name: 'Search / SEM', clientName: 'Google Search / SEM',                   engine: 'Intent',     tag: 'tag-green',  minPrice: 300,
     impressionNote: (b) => {
-      // Avg CPC for local markets ~$2–4; showing clicks not impressions since that's what matters
-      const clicksLow  = Math.round(b / 4);  // at $4 CPC
-      const clicksHigh = Math.round(b / 2);  // at $2 CPC
-      return `Est. ${clicksLow}–${clicksHigh} clicks/mo from high-intent local searches (varies by keywords & market)`;
+      const markup = getRate('sem_markup') / 100;
+      const adSpend = Math.round(b / (1 + markup));
+      const lo = getRate('sem_cpc_low'); const hi = getRate('sem_cpc_high');
+      const clicksLow  = Math.round(adSpend / hi);
+      const clicksHigh = Math.round(adSpend / lo);
+      return `Est. ${clicksLow}–${clicksHigh} clicks/mo ($${adSpend.toLocaleString()} ad spend — varies by keywords & market)`;
     },
     clientDesc: 'Google search ads that put your business at the top of results when local customers are actively searching for what you offer.' },
-  web:        { name: 'Website — Beyond Private Label', engine: 'Foundation', tag: 'tag-teal',   minPrice: null,
-    clientDesc: 'A professional, mobile-ready website built on WordPress — the foundation for your entire digital presence.' },
-  audience:   { name: 'Contests & Promotions — Audience.io', engine: 'Engagement', tag: 'tag-amber', minPrice: null,
+
+  audience:   { name: 'Contests & Promotions — Audience.io', clientName: 'Contests & Promotions', engine: 'Engagement', tag: 'tag-amber', minPrice: null,
     impressionNote: (b) => `Surveys, polls, sweepstakes, photo contests, and sports brackets — great for list building and engagement`,
     clientDesc: 'Interactive contests and promotions that drive engagement and capture audience data — surveys, polls, sweepstakes, photo contests, and sports brackets.' },
-  bestvo:     { name: 'Best Of / Readers Choice — Elite Insights', engine: 'Engagement', tag: 'tag-amber', minPrice: null,
+  bestvo:     { name: 'Best Of / Readers Choice — Elite Insights', clientName: 'Best Of / Readers Choice', engine: 'Engagement', tag: 'tag-amber', minPrice: null,
     impressionNote: (b) => `Annual or seasonal Readers Choice / Best Of contest drives community participation and sponsor visibility`,
     clientDesc: 'A Readers Choice or Best Of contest that generates community buzz, drives ballot traffic, and creates sponsorship opportunities for winning businesses.' },
-  newsletter: { name: 'Local Newsletter Sponsorship',   engine: 'Reach',      tag: 'tag-teal',   minPrice: 150,
-    impressionNote: (b) => `Sponsored placement in local email newsletters — open rates typically 20–35% of list size`,
+  newsletter: { name: 'Local Newsletter Sponsorship', clientName: 'Newsletter Sponsorship',   engine: 'Reach',      tag: 'tag-teal',   minPrice: 150,
+    impressionNote: (b) => newsletterOpenRate ? `Sponsored placement in local email newsletters — avg open rate: ${newsletterOpenRate}` : `Sponsored placement in local email newsletters`,
     clientDesc: 'Sponsored placement in our local email newsletters, putting your brand in front of thousands of engaged subscribers.' },
+  website:    { name: 'Website — Beyond Private Label', clientName: 'Website', engine: 'Foundation', tag: 'tag-teal',   minPrice: null, isWebsite: true,
+    clientDesc: 'A professional, mobile-ready website built on WordPress — your digital home base.' },
+  social:     { name: 'Social Media Management — BPL', clientName: 'Social Media Management',  engine: 'Social Mgmt', tag: 'tag-purple', minPrice: null, isSocial: true,
+    clientDesc: 'Fully managed social media — content calendar, posting, and monthly reporting across Facebook, Instagram, and more.' },
 };
 
 // ── State ────────────────────────────────────────────────────────────
@@ -637,7 +807,6 @@ let printItem = { included: false, description: '', price: 0 };
 let audienceConfig = { contestType: '', price: 0 };
 let bestvoConfig   = { package: '', price: 0 };
 let emailConfig = { tier: '5k', volume: 25000 };  // tier: '5k' | '25k' | 'cpm'
-let dropdownOpen = false;
 
 // ── Recommendation ───────────────────────────────────────────────────
 function recommend(s) {
@@ -651,7 +820,7 @@ function recommend(s) {
   const isPromo        = s.goal === 'promo';
 
   const candidates = [];
-  if (needsSite) candidates.push('web');
+  if (needsSite) candidates.push('website');
 
   // Goal-driven logic — each goal maps to a tight, specific set
   if (s.goal === 'awareness') {
@@ -778,11 +947,13 @@ function initProductBudgets(products, totalBudget) {
   const printAlloc    = printItem.included ? (printItem.price || 0) : 0;
   const audienceAlloc = products.includes('audience') ? (audienceConfig.price || 0) : 0;
   const bestvoAlloc   = products.includes('bestvo')   ? (bestvoConfig.price || 0)   : 0;
+  const websiteAlloc  = products.includes('website')  ? (websiteConfig.price || 0)  : 0;
+  const socialAlloc   = products.includes('social')   ? (socialConfig.price || 0)   : 0;
   // Email is handled separately; subtract any already-set product budgets
   const alreadySet = products
     .filter(id => productBudgets[id] !== undefined)
     .reduce((s, id) => s + (productBudgets[id] || 0), 0);
-  const avail = Math.max(0, totalBudget - printAlloc - audienceAlloc - bestvoAlloc - alreadySet);
+  const avail = Math.max(0, totalBudget - printAlloc - audienceAlloc - bestvoAlloc - websiteAlloc - socialAlloc - alreadySet);
 
   if (adjustable.length === 0) return;
 
@@ -809,47 +980,102 @@ function initProductBudgets(products, totalBudget) {
 }
 
 function onProductSlider(changedId, newVal) {
-  const printAlloc = printItem.included ? (printItem.price || 0) : 0;
-  const budget = state.budget - printAlloc;
   productBudgets[changedId] = parseInt(newVal);
-  const others = adjustableIds().filter(id => id !== changedId);
-  const remaining = budget - parseInt(newVal);
-  if (others.length === 0) { refreshSliderUI(); return; }
-  if (remaining <= 0) { others.forEach(id => { productBudgets[id] = 0; }); }
-  else {
-    const totalOtherCurrent = others.reduce((s, id) => s + (productBudgets[id] || 0), 0);
-    let distributed = 0;
-    others.forEach((id, i) => {
-      if (i === others.length - 1) { productBudgets[id] = Math.max(0, remaining - distributed); }
-      else {
-        const share = totalOtherCurrent > 0 ? (productBudgets[id] / totalOtherCurrent) * remaining : remaining / others.length;
-        const rounded = Math.max(0, Math.round(share / 25) * 25);
-        productBudgets[id] = rounded; distributed += rounded;
+  const b = parseInt(newVal);
+
+  const valEl = document.getElementById('pb-val-' + changedId);
+  if (valEl) valEl.textContent = '$' + b.toLocaleString();
+
+  // Update impression note live — each product has custom logic
+  const noteEl = document.getElementById('impr-note-' + changedId);
+  if (noteEl) {
+    if (changedId === 'fb') {
+      if (!fbImprOverride) {
+        const markup = getRate('fb_markup');
+        const adSpend = Math.round(b / (1 + markup/100));
+        const youKeep = b - adSpend;
+        const lo = getRate('fb_cpm_low'); const hi = getRate('fb_cpm_high');
+        noteEl.textContent = 'Est. '+Math.round(adSpend/hi/1000)+'k–'+Math.round(adSpend/lo/1000)+'k impressions/mo · $'+adSpend+' to FB ad spend, $'+youKeep+' to you · Confirm actual reach in Ads Manager';
       }
-    });
+      // Also update the inline markup note
+      const mkup = getRate('fb_markup');
+      const spend = Math.round(b / (1 + mkup/100));
+      document.querySelectorAll('[id^="fb-spend-note"]').forEach(el => {
+        el.textContent = 'At '+mkup+'%: $'+spend+' to FB, $'+(b-spend)+' to you';
+      });
+    } else if (changedId === 'simpli') {
+      const retailCpm = getRate('simpli_cpm');
+      const impr = Math.max(25000, Math.round(b / retailCpm * 1000));
+      const cost = Math.round(impr / 1000 * (simpliWholesaleCpm || 3));
+      noteEl.textContent = '~'+(impr/1000).toFixed(0)+'k impressions · Your cost: $'+cost+' ($'+(simpliWholesaleCpm||3)+'/CPM) · Margin: $'+(b-cost);
+    } else if (changedId === 'dooh') {
+      if (doohImprOverride) {
+        const rev = parseFloat(doohRevEcpm)||0; const med = parseFloat(doohMediaEcpm)||0;
+        noteEl.textContent = doohImprOverride+' impressions/mo'+(rev&&med?' · Your cost: $'+Math.round(med/rev*b)+' · Margin: $'+Math.round((1-med/rev)*b):'');
+      }
+    } else if (changedId === 'sem') {
+      const markup = getRate('sem_markup');
+      const adSpend = Math.round(b / (1 + markup/100));
+      noteEl.textContent = 'Clicks/mo confirmed after keyword setup · $'+adSpend+' ad spend · $'+(b-adSpend)+' to you';
+    } else if (changedId === 'localsite') {
+      const cpm = localsiteCpm || 10;
+      const impr = Math.round(b / cpm * 1000);
+      noteEl.textContent = '~'+(impr/1000).toFixed(0)+'k impressions/mo · CPM: $'+cpm;
+    } else if (PRODUCTS[changedId] && PRODUCTS[changedId].impressionNote) {
+      noteEl.textContent = PRODUCTS[changedId].impressionNote(b);
+    }
   }
-  refreshSliderUI();
+
+  updateTotalDisplay();
+}
+
+function updateTotalDisplay() {
+  let total = 0;
+  currentProducts.filter(id => !removedProducts[id]).forEach(id => {
+    const p = PRODUCTS[id]; if (!p) return;
+    if (id === 'audience') { total += audienceConfig.price || 0; return; }
+    if (id === 'bestvo')   { total += bestvoConfig.price || 0; return; }
+    if (id === 'website')  { total += websiteConfig.price || 0; return; }
+    if (id === 'social')   { total += socialConfig.price || 0; return; }
+    if (p.isEmail) { total += emailPrice(); return; }
+    if (p.minPrice !== null) total += productBudgets[id] || 0;
+  });
+  total += printItem.included ? (printItem.price || 0) : 0;
+  const totalEl = document.getElementById('grand-total');
+  if (totalEl) totalEl.textContent = '~$' + total.toLocaleString() + '/mo';
+  const diff = state.budget - total;
+  const diffEl = document.getElementById('budget-diff');
+  if (diffEl) {
+    if (diff > 0)      { diffEl.textContent = '$'+diff.toLocaleString()+' under'; diffEl.style.color = 'var(--text-dim)'; }
+    else if (diff < 0) { diffEl.textContent = '$'+Math.abs(diff).toLocaleString()+' over'; diffEl.style.color = '#E24B4A'; }
+    else               { diffEl.textContent = 'on budget'; diffEl.style.color = 'var(--accent)'; }
+  }
+  // Update sticky bar
+  const stickyVal = document.getElementById('sticky-total-val');
+  const stickyDiff = document.getElementById('sticky-total-diff');
+  if (stickyVal) stickyVal.textContent = '~$' + total.toLocaleString() + '/mo';
+  if (stickyDiff) {
+    if (diff > 0)      { stickyDiff.textContent = '($'+diff.toLocaleString()+' under)'; stickyDiff.style.color = 'var(--text-dim)'; }
+    else if (diff < 0) { stickyDiff.textContent = '($'+Math.abs(diff).toLocaleString()+' over)'; stickyDiff.style.color = '#E24B4A'; }
+    else               { stickyDiff.textContent = '(on budget)'; stickyDiff.style.color = 'var(--accent)'; }
+  }
+  updateCommitmentBox();
 }
 
 function refreshSliderUI() {
-  let total = 0;
+  // Just update display values without moving any sliders
   adjustableIds().forEach(id => {
-    const val = productBudgets[id] || 0; total += val;
+    const val = productBudgets[id] || 0;
     const valEl = document.getElementById('pb-val-' + id);
     const slEl  = document.getElementById('pb-slider-' + id);
     if (valEl) valEl.textContent = '$' + val.toLocaleString();
     if (slEl)  slEl.value = val;
-    // Update impression note live
     const noteEl = document.getElementById('impr-note-' + id);
     if (noteEl && PRODUCTS[id] && PRODUCTS[id].impressionNote) {
       noteEl.textContent = PRODUCTS[id].impressionNote(val);
     }
   });
-  if (printItem.included) total += (printItem.price || 0);
-  if (currentProducts.includes('audience')) total += audienceConfig.price || 0;
-  if (currentProducts.includes('bestvo'))   total += bestvoConfig.price || 0;
-  const el = document.getElementById('grand-total');
-  if (el) el.textContent = '~$' + total.toLocaleString() + '/mo';
+  updateTotalDisplay();
 }
 
 function removeProduct(id) {
@@ -935,6 +1161,194 @@ function onBestvoPrice(val) {
   refreshSliderUI();
 }
 
+// ── Website handlers ─────────────────────────────────────────────────
+function onWebsiteType(val) { websiteConfig.type = val; if (currentMode === 'build') bundleRender(); else renderOutput(); }
+function onWebsitePrice(val) {
+  websiteConfig.price = parseInt(val.replace(/[^0-9]/g,'')) || 0;
+  // Rebalance
+  productBudgets = {};
+  initProductBudgets(currentProducts.filter(p => !removedProducts[p]), state.budget);
+  refreshSliderUI();
+}
+
+// ── Social handlers ───────────────────────────────────────────────────
+function onSocialPkg(val) {
+  socialConfig.pkg = val;
+  const prices = { starter: 349, growth: 469, scale: 800 };
+  socialConfig.price = prices[val] || 0;
+  if (currentMode === 'build') { bundleRender(); bundleUpdateRemaining(bundleGetTotal()); }
+  else { productBudgets = {}; initProductBudgets(currentProducts.filter(p => !removedProducts[p]), state.budget); refreshSliderUI(); renderOutput(); }
+}
+function onSocialPrice(val) {
+  socialConfig.price = parseInt(val.replace(/[^0-9]/g,'')) || 0;
+  productBudgets = {};
+  initProductBudgets(currentProducts.filter(p => !removedProducts[p]), state.budget);
+  refreshSliderUI();
+}
+
+// ── Month tier handlers ───────────────────────────────────────────────
+function setDiscount(months, val) {
+  discountPct[months] = Math.min(50, Math.max(0, parseFloat(val) || 0));
+  updateCommitmentBox();
+}
+function updateCommitmentBoxForGrid(grid, monthly) {
+  if (!grid) return;
+  const simpliId = currentMode === 'build'
+    ? bundleProducts.find(id => id === 'simpli')
+    : currentProducts.find(id => id === 'simpli' && !removedProducts[id]);
+  const simpliBase = simpliId ? (currentMode === 'build' ? (bundleBudgets['simpli']||0) : (productBudgets['simpli']||0)) : 0;
+  const simpliBaseImpr = simpliBase > 0 ? Math.max(25000, Math.round(simpliBase / getRate('simpli_cpm') * 1000)) : 0;
+  const tiers = [3, 6, 12];
+  grid.innerHTML = tiers.map(m => {
+    const tb = tierBonuses[m] || {};
+    if (!tb.notes) tb.notes = ['','','','',''];
+    const simpliBonus = parseInt(tb.simpli_bonus) || 0;
+    const simpliCost  = simpliBonus > 0 ? Math.round(simpliBonus / 1000 * (simpliWholesaleCpm || 3)) : 0;
+    const total = monthly * m;
+    const simpliField = simpliBase > 0 ? `
+      <div style="margin-top:8px;">
+        <div style="font-size:10px;color:var(--text-dim);margin-bottom:3px;">Simpli.fi bonus impressions/mo</div>
+        <div style="display:flex;align-items:center;gap:5px;">
+          <input class="discount-input" type="text" inputmode="numeric" placeholder="e.g. 5000"
+            value="${simpliBonus || ''}"
+            oninput="tierBonuses[${m}].simpli_bonus=this.value.replace(/[^0-9]/g,'');const lbl=document.getElementById('simpli-lbl-${m}');if(lbl){const b=parseInt(this.value)||0;lbl.textContent=b>0?'${(simpliBaseImpr/1000).toFixed(0)}k → '+((simpliBaseImpr+b)/1000).toFixed(0)+'k impressions/mo':'';};"
+            style="width:80px;font-size:12px;">
+          <span style="font-size:10px;color:var(--text-dim);">impr · costs you $${simpliCost}/mo</span>
+        </div>
+        <div id="simpli-lbl-${m}" style="font-size:10px;color:var(--accent);margin-top:2px;">${simpliBonus > 0 ? `${(simpliBaseImpr/1000).toFixed(0)}k → ${((simpliBaseImpr+simpliBonus)/1000).toFixed(0)}k impressions/mo` : ''}</div>
+      </div>` : '';
+    const notesFields = tb.notes.map((v,i) => `
+      <input class="type-input" placeholder="e.g. +2k DOOH impressions (optional)"
+        style="font-size:11px;padding:4px 7px;margin-bottom:4px;"
+        value="${v}"
+        data-tier="${m}" data-idx="${i}"
+        oninput="tierBonuses[${m}].notes[${i}]=this.value;">`
+    ).join('');
+    return `
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">${m}-month total</div>
+        <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--accent);">$${total.toLocaleString()}</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:2px;">$${monthly.toLocaleString()}/mo × ${m}</div>
+        ${simpliField}
+        <div style="margin-top:8px;">
+          <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;">Bonus notes (shown on client summary if filled)</div>
+          ${notesFields}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function updateCommitmentBox() {
+  const grid = document.getElementById('commitment-grid');
+  const bundleGrid = document.getElementById('bundle-commitment-grid');
+  if (!grid) return;
+  const monthly = getTotalMonthly();
+
+  // Calculate Simpli.fi bonus impressions cost for each tier
+  const simpliId = currentProducts.find(id => id === 'simpli' && !removedProducts[id]);
+  const simpliBase = simpliId ? (productBudgets['simpli'] || 0) : 0;
+  const simpliBaseImpr = simpliBase > 0 ? Math.max(25000, Math.round(simpliBase / getRate('simpli_cpm') * 1000)) : 0;
+
+  const tiers = [3, 6, 12];
+  grid.innerHTML = tiers.map(m => {
+    const tb = tierBonuses[m] || {};
+    const simpliBonus = parseInt(tb.simpli_bonus) || 0;
+    const simpliCost  = simpliBonus > 0 ? Math.round(simpliBonus / 1000 * (simpliWholesaleCpm || 3)) : 0;
+    const total = monthly * m;
+
+    const simpliField = simpliBase > 0 ? `
+      <div style="margin-top:8px;">
+        <div style="font-size:10px;color:var(--text-dim);margin-bottom:3px;">Simpli.fi bonus impressions/mo</div>
+        <div style="display:flex;align-items:center;gap:5px;">
+          <input class="discount-input" type="text" inputmode="numeric" placeholder="e.g. 5000"
+            value="${simpliBonus || ''}"
+            oninput="const v=this.value.replace(/[^0-9]/g,'');tierBonuses[${m}].simpli_bonus=v;const lbl=document.getElementById('simpli-lbl-${m}');if(lbl){const bonus=parseInt(v)||0;lbl.textContent=bonus>0?'${(simpliBaseImpr/1000).toFixed(0)}k → '+((simpliBaseImpr+bonus)/1000).toFixed(0)+'k impressions/mo':'';};" 
+            style="width:80px;font-size:12px;">
+          <span style="font-size:10px;color:var(--text-dim);">impr · costs you $${simpliCost}/mo</span>
+        </div>
+        <div id="simpli-lbl-${m}" style="font-size:10px;color:var(--accent);margin-top:2px;">${simpliBonus > 0 ? `${(simpliBaseImpr/1000).toFixed(0)}k → ${((simpliBaseImpr+simpliBonus)/1000).toFixed(0)}k impressions/mo` : ''}</div>
+      </div>` : '';
+
+    // 5 free-text bonus lines — stored as array, debounced to avoid focus loss
+    if (!tb.notes) tb.notes = ['','','','',''];
+    const notesFields = tb.notes.map((v,i) => `
+      <input class="type-input" placeholder="e.g. +2k DOOH impressions (optional)"
+        style="font-size:11px;padding:4px 7px;margin-bottom:4px;"
+        value="${v}"
+        data-tier="${m}" data-idx="${i}"
+        oninput="tierBonuses[${m}].notes[${i}]=this.value;">`
+    ).join('');
+    const otherNoteField = `
+      <div style="margin-top:8px;">
+        <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;">Bonus notes (shown on client summary if filled)</div>
+        ${notesFields}
+      </div>`;
+
+    return `
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">${m}-month total</div>
+        <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--accent);">$${total.toLocaleString()}</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:2px;">$${monthly.toLocaleString()}/mo × ${m}</div>
+        ${simpliField}
+        ${otherNoteField}
+      </div>`;
+  }).join('');
+  updateROI();
+  if (bundleGrid) updateCommitmentBoxForGrid(bundleGrid, bundleGetTotal());
+}
+
+// ── ROI handlers ──────────────────────────────────────────────────────
+function toggleROI(checked) {
+  roiEnabled = checked;
+  // Show/hide whichever roi-fields div is present (rec or bundle)
+  const recFields = document.getElementById('roi-fields');
+  const bndFields = document.getElementById('roi-fields-bundle');
+  if (recFields) recFields.style.display = checked ? 'block' : 'none';
+  if (bndFields) bndFields.style.display = checked ? 'block' : 'none';
+  updateROI();
+}
+function onROITransaction(val) { roiAvgTransaction = parseInt(val.replace(/[^0-9]/g,'')) || 0; updateROI(); }
+function toggleROISummary(checked) { roiIncludeInSummary = checked; }
+function updateROI() {
+  if (!roiEnabled) return;
+  const monthly = getTotalMonthly() || bundleGetTotal();
+  const res = document.getElementById('roi-result');
+  if (!res) return;
+  if (!roiAvgTransaction || !monthly) {
+    res.innerHTML = '<span style="color:var(--text-dim);">Enter average transaction to calculate.</span>';
+    return;
+  }
+  const needed = Math.ceil(monthly / roiAvgTransaction);
+  const daily  = Math.ceil(needed / 30);
+  res.innerHTML = `To break even on <span class="roi-highlight">$${monthly.toLocaleString()}/mo</span>, you need approximately <span class="roi-highlight">${needed.toLocaleString()} new customers/mo</span> — about <span class="roi-highlight">${daily}/day</span> at an average transaction of $${roiAvgTransaction.toLocaleString()}.`;
+}
+
+// Helper: get current total monthly spend
+function getTotalMonthly() {
+  let total = 0;
+  currentProducts.filter(id => !removedProducts[id]).forEach(id => {
+    const p = PRODUCTS[id];
+    if (!p) return;
+    if (id === 'audience') { total += audienceConfig.price || 0; return; }
+    if (id === 'bestvo')   { total += bestvoConfig.price || 0; return; }
+    if (id === 'website')  { total += websiteConfig.price || 0; return; }
+    if (id === 'social')   { total += socialConfig.price || 0; return; }
+    if (p.isEmail) { total += emailPrice(); return; }
+    if (p.minPrice !== null) total += productBudgets[id] || 0;
+  });
+  total += printItem.included ? (printItem.price || 0) : 0;
+  return total;
+}
+
+// ── Rate editor helper ────────────────────────────────────────────────
+function saveRateFromInput(key, inputId) {
+  const el = document.getElementById(inputId);
+  if (!el) return;
+  const val = parseFloat(el.value) || DEFAULT_RATES[key];
+  saveRate(key, val);
+  renderOutput(); // re-render to update impression notes
+}
+
 // ── Print item ───────────────────────────────────────────────────────
 function togglePrint(checked) {
   printItem.included = checked;
@@ -962,12 +1376,22 @@ function openSummary() {
     const p = PRODUCTS[id];
     const budget = id === 'audience' ? (audienceConfig.price || null) :
                    id === 'bestvo'   ? (bestvoConfig.price || null) :
+                   id === 'website'  ? (websiteConfig.price || null) :
+                   id === 'social'   ? (socialConfig.price || null) :
                    (p.minPrice !== null || p.isEmail) ? productBudgets[id] : null;
     const contestDesc = id === 'audience' && audienceConfig.contestType ? ` Contest: ${audienceConfig.contestType}.` :
                         id === 'bestvo'   && bestvoConfig.package       ? ` Package: ${bestvoConfig.package}.` : '';
     const isPerBlast = p.isEmail;
     const impressionNote = p.impressionNote ? p.impressionNote(budget || 0) : null;
-    return { name: p.name, desc: p.clientDesc + contestDesc, budget, noPrice: (p.minPrice === null && !p.isEmail && id !== 'audience' && id !== 'bestvo') || (id === 'audience' && !audienceConfig.price) || (id === 'bestvo' && !bestvoConfig.price), isPerBlast, impressionNote };
+    const websiteDesc = id === 'website' && websiteConfig.type ? ` (${{'landing':'Landing page','3page':'3-page site','5page':'5-page site','10page':'10-page site','15page':'15-page site'}[websiteConfig.type] || ''})` : '';
+    const socialDesc  = id === 'social'  && socialConfig.pkg   ? ` (${{'starter':'Starter — 8 posts/mo','growth':'Growth — 12 posts/mo','scale':'Scale — 20 posts/mo'}[socialConfig.pkg] || ''})` : '';
+    const clientName = (id === 'localsite' && localsiteName ? localsiteName + ' Ads' : (p.clientName || p.name)) + websiteDesc + socialDesc + contestDesc;
+    const freeText = id === 'bestvo' && bestvoConfig.price === 0 && bestvoConfig.package ? bestvoConfig.package.toUpperCase() === 'FREE' ? 'FREE' : null : null;
+    return { id, name: clientName, repName: p.name, desc: p.clientDesc + contestDesc, budget, freeText,
+      noPrice: (p.minPrice === null && !p.isEmail && !['audience','bestvo','website','social'].includes(id)) ||
+               (id === 'audience' && !audienceConfig.price) || (id === 'bestvo' && !bestvoConfig.price) ||
+               (id === 'website'  && !websiteConfig.price)  || (id === 'social'  && !socialConfig.price),
+      isPerBlast, impressionNote };
   });
   const activeCustom = customProducts.filter(cp => !removedProducts[cp.id]).map(cp => ({
     name: cp.name, desc: cp.desc || '', budget: productBudgets[cp.id] || 0, noPrice: false
@@ -982,62 +1406,353 @@ function openSummary() {
 
   const btype = { retail:'Retail / Boutique', restaurant:'Restaurant / F&B', professional:'Professional Services', auto:'Auto', medical:'Medical / Healthcare', event:'Event / Nonprofit', realestate:'Real Estate', home:'Home Services', other:'Business' }[state.type] || 'Business';
 
+  // Apply localsite name override if set
+  allItems.forEach(item => {
+    const site = repInfo.website || localsiteName;
+    const pubName = getPubName();
+    if (item.id === 'localsite') item.name = site ? 'Local Digital Advertising — ' + site : 'Local News Site Advertising';
+    if (item.id === 'newsletter') item.name = pubName ? pubName + ' Newsletter Sponsorship' : 'Newsletter Sponsorship';
+  });
   const rows = allItems.map(item => `
     <div style="border:1px solid #e2e0d8;border-radius:10px;padding:16px 20px;margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
         <strong style="font-size:14px;color:#1a1a18;">${item.name}</strong>
         <span style="font-size:13px;font-family:monospace;color:#1a6b5a;white-space:nowrap;margin-left:12px;">
-          ${item.noPrice ? 'Custom quote' : item.isPerBlast ? '~$'+item.budget.toLocaleString()+'/blast' : item.budget ? '~$'+item.budget.toLocaleString()+'/mo' : ''}
+          ${item.noPrice && !item.freeText ? 'Custom quote' : item.freeText ? item.freeText : item.isPerBlast ? '~$'+item.budget.toLocaleString()+'/blast' : item.budget ? '~$'+item.budget.toLocaleString()+'/mo' : ''}
         </span>
       </div>
       <p style="font-size:13px;color:#5c5b56;margin:0;line-height:1.6;">${item.desc || ''}</p>
       ${item.impressionNote ? `<p style="font-size:12px;color:#1a6b5a;margin:6px 0 0;">${item.impressionNote}</p>` : ""}
     </div>`).join('');
 
+  // Build commitment tiers block — all 3 always shown, month-to-month as baseline
+  const simpliBaseImprSummary = (() => {
+    const simpliId = currentProducts.find(id => id === 'simpli' && !removedProducts['simpli']);
+    if (!simpliId) return 0;
+    const b = productBudgets['simpli'] || 0;
+    return b > 0 ? Math.max(25000, Math.round(b / getRate('simpli_cpm') * 1000)) : 0;
+  })();
+
+  const commitmentRows = [3,6,12].map(m => {
+    const total = totalEst * m;
+    const tb = tierBonuses[m] || {};
+    const simpliBonus = parseInt(tb.simpli_bonus) || 0;
+    const otherNote   = tb.other_note || '';
+
+    // Tactics list — just names, no prices
+    const tacticLines = allItems.filter(i => !i.noPrice).map(i => {
+      let bonusNote = '';
+      if (i.id === 'simpli' && simpliBonus > 0) {
+        bonusNote = ' <span style="color:#1a6b5a;">+'+Math.round(simpliBonus/1000)+'k bonus impressions → '+Math.round((simpliBaseImprSummary+simpliBonus)/1000)+'k/mo</span>';
+      }
+      return '<li style="margin-bottom:4px;"><strong>'+i.name+'</strong>'+bonusNote+'</li>';
+    }).join('');
+
+    const otherLines = (tb.notes||[]).filter(n=>n.trim()).map(n=>'<li style="margin-bottom:4px;color:#1a6b5a;">'+n+'</li>').join('');
+
+    return '<div style="flex:1;min-width:180px;border:1px solid #e2e0d8;border-radius:10px;padding:16px 18px;">'
+      + '<div style="font-family:monospace;font-size:10px;text-transform:uppercase;color:#888;margin-bottom:6px;">'+m+'-month total</div>'
+      + '<div style="font-size:22px;font-weight:600;color:#0d2e28;margin-bottom:2px;">$'+total.toLocaleString()+'</div>'
+      + '<div style="font-size:12px;color:#aaa;margin-bottom:10px;">$'+totalEst.toLocaleString()+'/mo × '+m+' months</div>'
+      + '<ul style="font-size:12px;color:#5c5b56;padding-left:14px;line-height:1.8;">'+tacticLines+otherLines+'</ul>'
+      + '</div>';
+  }).join('');
+
+  const roiBlock = (roiIncludeInSummary && roiEnabled && roiAvgTransaction && totalEst) ? `
+    <div style="background:#0d2e28;border-radius:12px;padding:20px 24px;margin-bottom:28px;color:#fff;">
+      <div style="font-family:monospace;font-size:10px;text-transform:uppercase;color:#4DD4C0;margin-bottom:8px;">ROI / break-even estimate</div>
+      <p style="font-size:14px;color:#9ecec8;line-height:1.7;">To break even on this investment, you need approximately
+        <strong style="color:#2DD4BF;">${Math.ceil(totalEst/roiAvgTransaction).toLocaleString()} new customers per month</strong>
+        — about <strong style="color:#2DD4BF;">${Math.ceil(totalEst/roiAvgTransaction/30)} per day</strong>
+        at an average transaction of $${roiAvgTransaction.toLocaleString()}.</p>
+    </div>` : '';
+
+  const repBlock = (()=>{
+    const lines = [];
+    if (repInfo.name)  lines.push('<div style="font-weight:500;color:#1a1a18;">'+repInfo.name+'</div>');
+    if (repInfo.email) lines.push('<div><a href="mailto:'+repInfo.email+'" style="color:#1a6b5a;">'+repInfo.email+'</a></div>');
+    if (repInfo.phone) lines.push('<div>'+repInfo.phone+'</div>');
+    return lines.length ? '<div style="margin-top:28px;padding-top:16px;border-top:1px solid #e2e0d8;"><div style="font-family:monospace;font-size:10px;text-transform:uppercase;color:#888;margin-bottom:8px;">Your representative</div><div style="font-size:14px;color:#5c5b56;line-height:1.8;">'+lines.join('')+'</div></div>' : '';
+  })();
+
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
-  <title>Digital Package — Boone Newsmedia</title>
+  <title>Digital Package — ${getPubName()}</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'DM Sans',sans-serif;background:#f7f6f2;color:#1a1a18;padding:40px 24px;min-height:100vh;}
-    .page{max-width:640px;margin:0 auto;}
-    @media print{body{background:#fff;padding:20px;}@page{margin:1.5cm;}}
-    .print-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;border:1px solid #d0cfc7;background:#fff;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;color:#5c5b56;margin-bottom:32px;transition:background .15s;}
-    .print-btn:hover{background:#f0efe9;}
-    @media print{.print-btn{display:none;}}
+    .page{max-width:680px;margin:0 auto;}
+    @media print{body{background:#fff;padding:20px;}@page{margin:1.5cm;}.no-print{display:none!important;}}
   </style>
   </head><body><div class="page">
-    <button class="print-btn" onclick="window.print()">⎙ Print / Save as PDF</button>
+    <button class="no-print" onclick="window.print()" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;border:1px solid #d0cfc7;background:#fff;font-size:13px;cursor:pointer;color:#5c5b56;margin-bottom:32px;">⎙ Print / Save as PDF</button>
+
     <div style="border-bottom:2px solid #1a1a18;padding-bottom:20px;margin-bottom:28px;">
       <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:8px;">${getPubName()} Digital Services</div>
       <h1 style="font-size:26px;font-weight:600;line-height:1.2;margin-bottom:4px;">Your Digital Growth Package</h1>
-      <p style="font-size:14px;color:#5c5b56;">${btype} · Prepared by ${getPubName()}</p>
+      <p style="font-size:14px;color:#5c5b56;">${btype}${state.goal ? ' · ' + {'awareness':'Brand Awareness','foot_traffic':'Drive Foot Traffic','leads':'Capture Leads','contests':'Contests & Engagement','email_list':'Build Email List','social':'Grow Social Following','web_traffic':'Increase Website Traffic','recruit':'Recruit / Hiring','promo':'Promote Sale or Event'}[state.goal] : ''} · <strong>${getTierName()} Package</strong></p>
     </div>
+
     <div style="background:#0d2e28;border-radius:12px;padding:20px 24px;margin-bottom:28px;color:#fff;">
-      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#4DD4C0;margin-bottom:6px;">Estimated monthly investment</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#4DD4C0;margin-bottom:6px;">${getTierName()} Package · Estimated monthly investment</div>
       <div style="font-size:32px;font-weight:600;font-family:'DM Mono',monospace;color:#2DD4BF;">~$${totalEst.toLocaleString()}<span style="font-size:16px;font-weight:400;color:#9ecec8;">/mo</span></div>
     </div>
+
+    ${roiBlock}
+
     <div style="margin-bottom:28px;">
       <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:14px;">What's included</div>
       ${rows}
     </div>
-    <div style="border-top:1px solid #e2e0d8;padding-top:16px;font-size:12px;color:#aaa;line-height:1.6;">
-      Pricing estimates are based on recommended minimums and are subject to final proposal. Contact your Boone Newsmedia representative for a formal quote.<br>
-      <strong style="color:#888;">${getPubName()} Digital Services</strong>
+
+    <div style="margin-bottom:28px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:12px;">Commitment options</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">${commitmentRows}</div>
     </div>
+
+    <div style="border-top:1px solid #e2e0d8;padding-top:16px;font-size:12px;color:#aaa;line-height:1.6;">
+      Pricing estimates are based on recommended minimums and are subject to final proposal.
+    </div>
+    ${repBlock}
   </div></body></html>`;
 
-  const w = window.open('', '_blank');
-  w.document.write(html);
-  w.document.close();
+  const blob = new Blob([html], {type: 'text/html'});
+  const url  = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+}
+
+
+// ── Shared card builder — used by both rec and bundle modes ──────────
+function buildCardPriceSection(id, cur, sliderMax, sliderOnInput, mode) {
+  const isBuild = mode === 'build';
+  const noteId = isBuild ? 'impr-note-b-' + id : 'impr-note-' + id;
+  const sliderFn = isBuild ? `bundleOnSlider('${id}', this.value)` : `onProductSlider('${id}', this.value)`;
+  const p = PRODUCTS[id]; if (!p) return '';
+
+  if (p.isEmail) {
+    const t = emailConfig.tier; const vol = emailConfig.volume; const ep = emailPrice();
+    productBudgets['email'] = ep;
+    return `
+      <div style="margin-top:10px;">
+        <div class="price-label" style="margin-bottom:6px;">Select list size</div>
+        <div class="btn-row" style="margin-bottom:10px;">
+          <button class="opt${t==='5k'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="setEmailTier('5k')">Up to 5,000 emails — $250/blast</button>
+          <button class="opt${t==='25k'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="setEmailTier('25k')">Up to 25,000 emails — $500/blast</button>
+          <button class="opt${t==='cpm'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="setEmailTier('cpm')">25,000+ emails — $20/CPM</button>
+        </div>
+        ${t === 'cpm' ? `<div class="prod-slider-row"><input type="range" class="prod-slider" min="25000" max="200000" step="1000" value="${vol}" oninput="onEmailVolumeSlider(this.value)"><span class="prod-slider-val" id="email-vol-display">${vol.toLocaleString()} emails</span></div><div class="price-label" id="email-price-display" style="margin-top:4px;">~$${ep.toLocaleString()} retail</div>` : `<div class="price-label">Retail: <strong style="color:var(--accent);">$${ep.toLocaleString()}</strong> per blast &nbsp;·&nbsp; Wholesale: $${t==='5k'?'100':'250'}</div>`}
+      </div>`;
+  }
+  if (id === 'website') {
+    const wt = websiteConfig.type;
+    const WTYPES = [
+      { val:'landing',  label:'Landing page',    setup:'$155',   hosting:'$31.95' },
+      { val:'3page',    label:'3-page site',     setup:'$429',   hosting:'$79.99' },
+      { val:'5page',    label:'5-page site',     setup:'$579',   hosting:'$79.99' },
+      { val:'10page',   label:'10-page site',    setup:'$999',   hosting:'$79.99' },
+      { val:'15page',   label:'15-page site',    setup:'$1,499', hosting:'$89.99' },
+      { val:'custom',   label:'Custom / 16+ pg', setup:'TBD',    hosting:'TBD'    },
+    ];
+    const sel = WTYPES.find(t=>t.val===wt);
+    return `
+      <div style="margin-top:10px;">
+        <a class="bpl-link" href="https://docs.google.com/spreadsheets/d/1KHBTiirCTOKhFi2PpOdOU-r7gti4NcvUPKHjG5BhP7g/edit" target="_blank">&#8599; BPL rate card</a>
+        <div class="price-label" style="margin-bottom:6px;margin-top:8px;">Select package</div>
+        <div class="sub-option-row">
+          ${WTYPES.map(t => `<button class="sub-opt${wt===t.val?' selected':''}" onclick="onWebsiteType('${t.val}')">${t.label}</button>`).join('')}
+        </div>
+        ${sel ? `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+          <div>
+            <div class="price-label" style="margin-bottom:3px;">Setup fee (suggested: ${sel.setup})</div>
+            <input class="type-input" placeholder="${sel.setup}" value="${websiteConfig.setupFee||''}" style="font-size:12px;padding:5px 8px;" oninput="websiteConfig.setupFee=this.value;">
+          </div>
+          <div>
+            <div class="price-label" style="margin-bottom:3px;">Monthly hosting (suggested: ${sel.hosting}/mo)</div>
+            <input class="type-input" placeholder="${sel.hosting}" value="${websiteConfig.price ? '$'+websiteConfig.price : ''}" style="font-size:12px;padding:5px 8px;" oninput="onWebsitePrice(this.value)">
+          </div>
+        </div>
+        <div class="price-label" style="margin-top:4px;">Setup fee is one-time · 12-month minimum on hosting</div>
+        ${wt==='custom' ? '<div class="price-label" style="margin-top:4px;color:var(--accent);">Custom sites scoped individually — contact BPL for quote</div>' : ''}
+        ` : ''}
+      </div>`;
+  }
+  if (id === 'social') {
+    const sp = socialConfig.pkg;
+    const SPKGS = [
+      { val:'starter', label:'Starter — 8 posts/mo', price: 349 },
+      { val:'growth',  label:'Growth — 12 posts/mo', price: 469 },
+      { val:'scale',   label:'Scale — 20 posts/mo',  price: 800 },
+    ];
+    return `
+      <div style="margin-top:10px;">
+        <a class="bpl-link" href="https://docs.google.com/spreadsheets/d/1KHBTiirCTOKhFi2PpOdOU-r7gti4NcvUPKHjG5BhP7g/edit" target="_blank">&#8599; BPL rate card</a>
+        <div class="price-label" style="margin-bottom:6px;margin-top:8px;">Select package</div>
+        <div class="sub-option-row">
+          ${SPKGS.map(pkg => `<button class="sub-opt${sp===pkg.val?' selected':''}" onclick="onSocialPkg('${pkg.val}')">${pkg.label} — $${pkg.price}/mo</button>`).join('')}
+        </div>
+        <div class="price-label" style="margin-bottom:4px;margin-top:8px;">Adjust price if needed</div>
+        <input type="text" class="type-input type-input-price" placeholder="$0/mo" value="${socialConfig.price ? '$'+socialConfig.price.toLocaleString() : ''}" oninput="onSocialPrice(this.value)">
+        <div class="price-label" style="margin-top:4px;">$200 setup fee billed separately · 6-month minimum</div>
+      </div>`;
+  }
+  if (id === 'audience') {
+    return `
+      <div style="margin-top:10px;">
+        <div class="price-label" style="margin-bottom:4px;">Contest type</div>
+        <input type="text" class="type-input" placeholder="e.g. Ugliest couch, $500 Visa gift card..." value="${audienceConfig.contestType}" oninput="onAudienceType(this.value)" style="margin-bottom:8px;">
+        <div class="price-label" style="margin-bottom:4px;">Monthly price</div>
+        <input type="text" class="type-input type-input-price" placeholder="$0" value="${audienceConfig.price ? '$'+audienceConfig.price.toLocaleString() : ''}" oninput="onAudiencePrice(this.value)">
+        <div class="price-label" style="margin-top:4px;">Contact ryan@audience.io for quote</div>
+      </div>`;
+  }
+  if (id === 'bestvo') {
+    return `
+      <div style="margin-top:10px;">
+        <div class="price-label" style="margin-bottom:4px;">Package / contest name</div>
+        <input type="text" class="type-input" placeholder="e.g. Best Of 2025, Readers Choice — Dining..." value="${bestvoConfig.package}" oninput="onBestvoPackage(this.value)" style="margin-bottom:8px;">
+        <div class="price-label" style="margin-bottom:4px;">Package price (type FREE to show as free)</div>
+        <input type="text" class="type-input type-input-price" placeholder="$0" value="${bestvoConfig.price ? '$'+bestvoConfig.price.toLocaleString() : ''}" oninput="onBestvoPrice(this.value)">
+        <div class="price-label" style="margin-top:4px;">Contact cody@eliteinsights.io or brynn@eliteinsights.io</div>
+      </div>`;
+  }
+  if (id === 'dooh') {
+    return `
+      <div style="margin-top:10px;">
+        <div class="price-label" style="margin-bottom:4px;">What you're charging the client (retail/mo)</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:16px;color:var(--text-muted);">$</span>
+          <input class="type-input" type="text" inputmode="numeric" placeholder="e.g. 300"
+            value="${cur > 0 ? cur : ''}"
+            style="width:120px;font-size:14px;font-family:'DM Mono',monospace;color:var(--accent);padding:5px 8px;"
+            oninput="const v=parseInt(this.value.replace(/[^0-9]/g,''))||0;productBudgets['dooh']=v;bundleBudgets['dooh']=v;updateTotalDisplay();">
+        </div>
+        <div class="price-label" style="margin-bottom:3px;">Impressions <span style="color:var(--text-dim);">(from top bar of Vistar spec)</span></div>
+        <input class="type-input" placeholder="e.g. 9,501" value="${doohImprOverride}"
+          style="font-size:12px;padding:5px 8px;max-width:200px;"
+          oninput="doohImprOverride=this.value;const n=document.getElementById(noteId);if(n)n.textContent=this.value?this.value+' impressions/mo':'Enter impressions from Vistar spec below';">
+      </div>`;
+  }
+  if (id === 'newsletter') {
+    return `
+      <div class="prod-slider-row">
+        <input type="range" class="prod-slider" id="${isBuild ? 'bpb-slider-newsletter' : 'pb-slider-newsletter'}" min="0" max="${sliderMax}" step="25" value="${cur}" oninput="${isBuild ? sliderFn : sliderOnInput}">
+        <span class="prod-slider-val" id="${isBuild ? 'bpb-val-newsletter' : 'pb-val-newsletter'}">$${cur.toLocaleString()}</span>
+      </div>
+      <div class="price-label">est. retail/mo &nbsp;·&nbsp; rec. min $150</div>
+      <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
+        <div class="price-label">Open rate (optional):</div>
+        <input class="type-input" placeholder="e.g. 28%" value="${newsletterOpenRate}"
+          style="width:80px;font-size:12px;padding:4px 8px;"
+          oninput="newsletterOpenRate=this.value;const n=document.getElementById(noteId);if(n)n.textContent=this.value?'Sponsored placement in local email newsletters — avg open rate: '+this.value:'Sponsored placement in local email newsletters';">
+      </div>`;
+  }
+  if (p.minPrice === null) {
+    return `<div class="price-fixed">No pricing configured</div>`;
+  }
+
+  // Standard slider products (simpli, fb, sem, localsite, prospect, etc.)
+  const extraFields = (() => {
+    if (id === 'simpli') return `
+      <div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap;">
+        <div>
+          <div class="price-label" style="margin-bottom:3px;">Your retail CPM $</div>
+          <input class="type-input" placeholder="10" value="${getRate('simpli_cpm')}" style="width:80px;font-size:12px;padding:5px 8px;"
+            oninput="saveRate('simpli_cpm',parseFloat(this.value)||10);const n=document.getElementById(noteId);if(n){const b=${cur};const cpm=parseFloat(this.value)||10;const i=Math.max(25000,Math.round(b/cpm*1000));const c=Math.round(i/1000*(simpliWholesaleCpm||3));n.textContent='~'+(i/1000).toFixed(0)+'k impressions · Your cost: $'+c+' ($'+(simpliWholesaleCpm||3)+'/CPM) · Margin: $'+(b-c);}">
+        </div>
+        <div>
+          <div class="price-label" style="margin-bottom:3px;">Wholesale CPM $ (what you pay Simpli.fi)</div>
+          <input class="type-input" placeholder="3" value="${simpliWholesaleCpm}" style="width:80px;font-size:12px;padding:5px 8px;"
+            oninput="simpliWholesaleCpm=parseFloat(this.value)||3;const n=document.getElementById(noteId);if(n){const b=${cur};const cpm=getRate('simpli_cpm');const i=Math.max(25000,Math.round(b/cpm*1000));const c=Math.round(i/1000*(simpliWholesaleCpm||3));n.textContent='~'+(i/1000).toFixed(0)+'k impressions · Your cost: $'+c+' ($'+(simpliWholesaleCpm||3)+'/CPM) · Margin: $'+(b-c);}">
+        </div>
+      </div>`;
+    if (id === 'fb') return `
+      <div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap;">
+        <div>
+          <div class="price-label" style="margin-bottom:3px;">Your markup %</div>
+          <input class="type-input" placeholder="100" value="${getRate('fb_markup')}" style="width:80px;font-size:12px;padding:5px 8px;"
+            oninput="saveRate('fb_markup',parseFloat(this.value)||100);const b=${cur};const s=Math.round(b/(1+(parseFloat(this.value)||100)/100));const n=document.getElementById(noteId);if(n)n.textContent=(fbImprOverride?fbImprOverride+' impressions · ':'Est. 3k–16k+ impressions/mo · ')+'$'+s+' to FB, $'+(b-s)+' to you';">
+        </div>
+        <div>
+          <div class="price-label" style="margin-bottom:3px;">Actual reach from Ads Manager (optional)</div>
+          <input class="type-input" placeholder="e.g. 8,200" value="${fbImprOverride}" style="width:140px;font-size:12px;padding:5px 8px;"
+            oninput="fbImprOverride=this.value;const b=${cur};const s=Math.round(b/(1+getRate('fb_markup')/100));const n=document.getElementById(noteId);if(n)n.textContent=(this.value?this.value+' impressions · ':'Est. 3k–16k+ impressions/mo · ')+'$'+s+' to FB, $'+(b-s)+' to you';">
+        </div>
+      </div>`;
+    if (id === 'sem') return `
+      <div style="margin-top:8px;">
+        <div class="price-label" style="margin-bottom:3px;">Your markup %</div>
+        <input class="type-input" placeholder="100" value="${getRate('sem_markup')}" style="width:80px;font-size:12px;padding:5px 8px;"
+          oninput="saveRate('sem_markup',parseFloat(this.value)||100);const b=${cur};const s=Math.round(b/(1+(parseFloat(this.value)||100)/100));const n=document.getElementById(noteId);if(n)n.textContent='Clicks/mo confirmed after keyword setup · $'+s+' ad spend · $'+(b-s)+' to you';">
+      </div>`;
+    if (id === 'localsite') return `
+      <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
+        <div class="price-label">CPM $</div>
+        <input class="type-input" placeholder="10" value="${localsiteCpm}" style="width:70px;font-size:12px;padding:5px 8px;"
+          oninput="localsiteCpm=parseFloat(this.value)||10;const n=document.getElementById(noteId);if(n){const b=${cur};const i=Math.round(b/(localsiteCpm||10)*1000);n.textContent='~'+(i/1000).toFixed(0)+'k impressions/mo · CPM: $'+localsiteCpm;}">
+        <span class="price-label" style="color:var(--text-dim);">Default $10 — update to match your rate</span>
+      </div>`;
+    return '';
+  })();
+
+  return `
+    <div class="prod-slider-row">
+      <input type="range" class="prod-slider" id="${isBuild ? 'bpb-slider-'+id : 'pb-slider-'+id}" min="0" max="${sliderMax}" step="25" value="${cur}" oninput="${isBuild ? sliderFn : sliderOnInput}">
+      <span class="prod-slider-val" id="${isBuild ? 'bpb-val-'+id : 'pb-val-'+id}">$${cur.toLocaleString()}</span>
+    </div>
+    <div class="price-label">est. retail/mo &nbsp;·&nbsp; rec. min $${p.minPrice.toLocaleString()} — drag to adjust</div>
+    ${extraFields}`;
+}
+
+function buildCardHTML(id, cur, sliderMax, sliderOnInput, removeOnClick, mode) {
+  const p = PRODUCTS[id]; if (!p) return '';
+  const priceSection = buildCardPriceSection(id, cur, sliderMax, sliderOnInput, mode);
+  const isBuildMode = mode === 'build';
+  const noteId = isBuildMode ? 'impr-note-b-' + id : 'impr-note-' + id;
+  const noteText = (p.repNote || p.impressionNote) ? (p.repNote || p.impressionNote)(cur) : '';
+  return `<div class="product-card">
+    <div class="product-card-top">
+      <div class="product-name">${p.name}<span class="engine-tag ${p.tag}">${p.engine}</span></div>
+      <button class="remove-btn" onclick="${removeOnClick}" title="Remove">✕</button>
+    </div>
+    <div class="product-note">${p.clientDesc}</div>
+    ${noteText ? `<div id="${noteId}" class="price-label" style="margin-top:4px;color:var(--accent);opacity:0.8;">${noteText}</div>` : ''}
+    ${priceSection}
+  </div>`;
 }
 
 // ── Render ───────────────────────────────────────────────────────────
+function getTierName() {
+  if (tierNameOverride) return tierNameOverride;
+  const b = state.budget;
+  if (b <= 500)  return 'Good';
+  if (b <= 1500) return 'Better';
+  return 'Best';
+}
+
+function getTierRange() {
+  const b = state.budget;
+  if (b <= 500)  return '$250–$500';
+  if (b <= 1500) return '$500–$1,500';
+  return '$1,500+';
+}
+
 function render() {
   removedProducts = {}; productBudgets = {}; customProducts = [];
   printItem = { included: false, description: '', price: 0 };
   audienceConfig = { contestType: '', price: 0 };
   bestvoConfig   = { package: '', price: 0 };
+  tierNameOverride = '';
+  localsiteName = '';
+  localsiteCpm = 10;
+  newsletterOpenRate = '';
+  doohImprOverride = ''; doohRevEcpm = ''; doohMediaEcpm = '';
+  fbImprOverride = ''; simpliWholesaleCpm = 3;
+  tierBonuses = { 3: {notes:['','','','','']}, 6: {notes:['','','','','']}, 12: {notes:['','','','','']} };
+  websiteConfig = { type: '', price: 0, setupFee: '' };
+  socialConfig  = { pkg: '', price: 0 };
+  monthTier = 1; discountPct = { 3:0, 6:0, 12:0 };
+  roiEnabled = false; roiAvgTransaction = 0; roiIncludeInSummary = false;
   emailConfig = { tier: '5k', volume: 25000 };
   renderOutput();
 }
@@ -1056,73 +1771,13 @@ function renderOutput() {
 
   const cardHtml = activeProducts.map(id => {
     const p = PRODUCTS[id];
-    let priceSection;
-    if (p.isEmail) {
-      const t = emailConfig.tier;
-      const vol = emailConfig.volume;
-      const ep = emailPrice();
-      productBudgets['email'] = ep;
-      priceSection = `
-        <div style="margin-top:10px;">
-          <div class="price-label" style="margin-bottom:6px;">Select list size</div>
-          <div class="btn-row" style="margin-bottom:10px;">
-            <button class="opt${t==='5k'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="setEmailTier('5k')">Up to 5,000 emails — $250/blast</button>
-            <button class="opt${t==='25k'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="setEmailTier('25k')">Up to 25,000 emails — $500/blast</button>
-            <button class="opt${t==='cpm'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="setEmailTier('cpm')">25,000+ emails — $20/CPM</button>
-          </div>
-          ${t === 'cpm' ? `
-          <div class="prod-slider-row">
-            <input type="range" class="prod-slider" min="25000" max="200000" step="1000" value="${vol}" oninput="onEmailVolumeSlider(this.value)">
-            <span class="prod-slider-val" id="email-vol-display">${vol.toLocaleString()} emails</span>
-          </div>
-          <div class="price-label" id="email-price-display" style="margin-top:4px;">~$${ep.toLocaleString()} retail</div>` : `
-          <div class="price-label">Retail: <strong style="color:var(--accent);">$${ep.toLocaleString()}</strong> per blast &nbsp;·&nbsp; Wholesale: $${t==='5k'?'100':'250'}</div>`}
-        </div>`;
-    } else if (id === 'audience') {
-      priceSection = `
-        <div style="margin-top:10px;">
-          <div class="price-label" style="margin-bottom:4px;">Contest type</div>
-          <input type="text" class="type-input" placeholder="e.g. Ugliest couch, $500 Visa gift card giveaway..."
-            value="${audienceConfig.contestType}" oninput="onAudienceType(this.value)" style="margin-bottom:8px;">
-          <div class="price-label" style="margin-bottom:4px;">Monthly price</div>
-          <input type="text" class="type-input type-input-price" placeholder="$0"
-            value="${audienceConfig.price ? '$'+audienceConfig.price.toLocaleString() : ''}"
-            oninput="onAudiencePrice(this.value)">
-          <div class="price-label" style="margin-top:4px;">Contact ryan@audience.io for quote</div>
-        </div>`;
-    } else if (id === 'bestvo') {
-      priceSection = `
-        <div style="margin-top:10px;">
-          <div class="price-label" style="margin-bottom:4px;">Package / contest name</div>
-          <input type="text" class="type-input" placeholder="e.g. Best Of 2025, Readers Choice — Dining..."
-            value="${bestvoConfig.package}" oninput="onBestvoPackage(this.value)" style="margin-bottom:8px;">
-          <div class="price-label" style="margin-bottom:4px;">Package price</div>
-          <input type="text" class="type-input type-input-price" placeholder="$0"
-            value="${bestvoConfig.price ? '$'+bestvoConfig.price.toLocaleString() : ''}"
-            oninput="onBestvoPrice(this.value)">
-          <div class="price-label" style="margin-top:4px;">Contact cody@eliteinsights.io or brynn@eliteinsights.io</div>
-        </div>`;
-    } else if (p.minPrice === null) {
-      priceSection = `<div class="price-fixed">see BPL rate card</div>`;
-    } else {
-      const cur = productBudgets[id] !== undefined ? productBudgets[id] : p.minPrice;
-      priceSection = `
-        <div class="prod-slider-row">
-          <input type="range" class="prod-slider" id="pb-slider-${id}" min="0" max="${state.budget}" step="25" value="${cur}" oninput="onProductSlider('${id}', this.value)">
-          <span class="prod-slider-val" id="pb-val-${id}">$${cur.toLocaleString()}</span>
-        </div>
-        <div class="price-label">est. retail/mo &nbsp;·&nbsp; rec. min $${p.minPrice.toLocaleString()} — drag to redistribute</div>`;
-    }
-    return `<div class="product-card" id="card-${id}">
-      <div class="product-card-top">
-        <div class="product-name">${p.name}<span class="engine-tag ${p.tag}">${p.engine}</span></div>
-        <button class="remove-btn" onclick="removeProduct('${id}')" title="Remove">✕</button>
-      </div>
-      <div class="product-note">${p.clientDesc}</div>
-      ${p.impressionNote ? `<div class="price-label" style="margin-top:4px;color:var(--accent);opacity:0.8;">${p.impressionNote(productBudgets[id] || p.minPrice || 0)}</div>` : ""}
-      ${priceSection}
-    </div>`;
+    const cur = productBudgets[id] !== undefined ? productBudgets[id] : (p.minPrice || 0);
+    const card = buildCardHTML(id, cur, state.budget, `onProductSlider('${id}', this.value)`, `removeProduct('${id}')`, 'rec');
+    // Override id on impr-note for products that need specific IDs
+    return card.replace(`id="impr-note-${id}"`, `id="impr-note-${id}"`);
   }).join('');
+
+  // Cards built above via buildCardHTML
 
   const printChecked = printItem.included ? 'checked' : '';
   const printCard = `
@@ -1174,6 +1829,8 @@ function renderOutput() {
   activeProducts.forEach(id => {
     if (id === 'audience') { totalEst += audienceConfig.price || 0; return; }
     if (id === 'bestvo')   { totalEst += bestvoConfig.price || 0; return; }
+    if (id === 'website')  { totalEst += websiteConfig.price || 0; return; }
+    if (id === 'social')   { totalEst += socialConfig.price || 0; return; }
     if (PRODUCTS[id].minPrice !== null || PRODUCTS[id].isEmail) totalEst += productBudgets[id] || 0;
   });
   if (printItem.included) totalEst += printItem.price || 0;
@@ -1181,13 +1838,78 @@ function renderOutput() {
   const notesHtml = rec.notes.length
     ? `<div class="notes-box"><div class="notes-title">Rep notes</div><ul>${rec.notes.map(n=>`<li>${n}</li>`).join('')}</ul></div>` : '';
 
+  // Schedule commitment box update after DOM renders
+  setTimeout(() => { updateCommitmentBox(); updateROI(); }, 0);
+
   out.innerHTML = `
-    <div class="rec-header">Recommended for this client</div>
+    <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px;">
+      <div class="rec-header" style="margin-bottom:0;">Recommended</div>
+      <input type="text" id="tier-label-input"
+        value="${getTierName()}"
+        oninput="tierNameOverride=this.value"
+        style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+               color:var(--accent);background:var(--accent-dim);border:1px solid var(--accent-border);
+               border-radius:6px;padding:3px 10px;outline:none;width:130px;"
+        title="Edit package tier name">
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.06em;">package &nbsp;·&nbsp; ${getTierRange()}</span>
+    </div>
     <div class="product-cards">${cardHtml}${printCard}</div>
     ${addBtn}
     ${removedHtml}
-    ${totalEst > 0 ? `<div class="total-row" style="margin-top:20px;"><span class="total-label">Estimated monthly total (retail)</span><span class="total-val" id="grand-total">~$${totalEst.toLocaleString()}/mo</span></div>` : ''}
+    ${totalEst > 0 ? `
+    <div class="total-row" style="margin-top:20px;">
+      <div>
+        <div class="total-label">Estimated monthly total (retail)</div>
+        <div class="total-val" id="grand-total">~$${totalEst.toLocaleString()}/mo</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="total-label">vs. budget</div>
+        <div id="budget-diff" style="font-family:'DM Mono',monospace;font-size:13px;${totalEst > state.budget ? 'color:#E24B4A;' : totalEst < state.budget ? 'color:var(--text-dim);' : 'color:var(--accent);'}">
+          ${totalEst > state.budget ? '$'+(totalEst-state.budget).toLocaleString()+' over' : totalEst < state.budget ? '$'+(state.budget-totalEst).toLocaleString()+' under' : 'on budget'}
+        </div>
+      </div>
+    </div>
+    <div class="sticky-total" id="sticky-total-bar">
+      <span class="sticky-total-label">Monthly total</span>
+      <span class="sticky-total-val">
+        <span id="sticky-total-val">~$${totalEst.toLocaleString()}/mo</span>
+        <span id="sticky-total-diff" style="font-size:13px;font-weight:400;margin-left:12px;${totalEst > state.budget ? 'color:#E24B4A;' : 'color:var(--text-dim);'}">
+          ${totalEst > state.budget ? '($'+(totalEst-state.budget).toLocaleString()+' over)' : totalEst < state.budget ? '($'+(state.budget-totalEst).toLocaleString()+' under)' : '(on budget)'}
+        </span>
+      </span>
+    </div>` : ''}
     ${notesHtml}
+    <div class="month-tier-section">
+      <div class="step-label" style="margin-bottom:12px;">Commitment options — shown on client summary</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;" id="commitment-grid"></div>
+    </div>
+
+    <div class="roi-section">
+      <div class="roi-toggle-row">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text-muted);">
+          <input type="checkbox" ${roiEnabled?'checked':''} onchange="toggleROI(this.checked)"
+            style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer;">
+          ROI / break-even calculator
+        </label>
+      </div>
+      <div id="roi-fields" style="display:${roiEnabled?'block':'none'};">
+        <div class="price-label" style="margin:10px 0 4px;">Client's average transaction value</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:14px;color:var(--text-muted);">$</span>
+          <input type="text" class="type-input" style="width:140px;"
+            placeholder="e.g. 85"
+            value="${roiAvgTransaction || ''}"
+            oninput="onROITransaction(this.value)">
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);cursor:pointer;">
+            <input type="checkbox" ${roiIncludeInSummary?'checked':''} onchange="toggleROISummary(this.checked)"
+              style="width:12px;height:12px;accent-color:var(--accent);">
+            Include in client summary
+          </label>
+        </div>
+        <div class="roi-result" id="roi-result" style="margin-top:8px;"></div>
+      </div>
+    </div>
+
     <button class="summary-btn" onclick="openSummary()">⎙ Generate client summary</button>
     <br><button class="reset-btn" onclick="reset()">← Start over</button>
   `;
@@ -1275,21 +1997,36 @@ function bundleRemoveProduct(id) {
 }
 
 function bundleOnSlider(changedId, newVal) {
-  bundleBudgets[changedId] = parseInt(newVal);
-  const others = bundleProducts.filter(id => id !== changedId && PRODUCTS[id] && PRODUCTS[id].minPrice !== null && !PRODUCTS[id].isEmail);
-  const customTotal = bundleCustomItems.reduce((s, c) => s + c.price, 0);
-  const emailAlloc  = bundleProducts.includes('email') ? bundleEmailPrice() : 0;
-  const remaining   = bundleBudget - parseInt(newVal) - customTotal - emailAlloc;
-  if (others.length === 0) { bundleRefreshSliders(); return; }
-  if (remaining <= 0) { others.forEach(id => { bundleBudgets[id] = 0; }); }
-  else {
-    const tc = others.reduce((s, id) => s + (bundleBudgets[id] || 0), 0);
-    let dist = 0;
-    others.forEach((id, i) => {
-      if (i === others.length - 1) { bundleBudgets[id] = Math.max(0, remaining - dist); }
-      else { const share = Math.max(0, Math.round((tc > 0 ? (bundleBudgets[id]/tc)*remaining : remaining/others.length) / 25)*25); bundleBudgets[id] = share; dist += share; }
-    });
+  const b = parseInt(newVal);
+  bundleBudgets[changedId] = b;
+
+  // Update price display
+  const valEl = document.getElementById('bpb-val-' + changedId);
+  if (valEl) valEl.textContent = '$' + b.toLocaleString();
+
+  // Update impression note live (same logic as onProductSlider but for bundle IDs)
+  const noteEl = document.getElementById('impr-note-b-' + changedId);
+  if (noteEl) {
+    const p = PRODUCTS[changedId];
+    if (changedId === 'fb') {
+      const markup = getRate('fb_markup'); const adSpend = Math.round(b/(1+markup/100));
+      noteEl.textContent = (fbImprOverride?fbImprOverride+' impressions · ':'Est. 3k–16k+ impressions/mo · ')+'$'+adSpend+' to FB, $'+(b-adSpend)+' to you';
+    } else if (changedId === 'simpli') {
+      const cpm = getRate('simpli_cpm'); const impr = Math.max(25000,Math.round(b/cpm*1000));
+      const cost = Math.round(impr/1000*(simpliWholesaleCpm||3));
+      noteEl.textContent = '~'+(impr/1000).toFixed(0)+'k impressions · Your cost: $'+cost+' ($'+(simpliWholesaleCpm||3)+'/CPM) · Margin: $'+(b-cost);
+    } else if (changedId === 'sem') {
+      const markup = getRate('sem_markup'); const adSpend = Math.round(b/(1+markup/100));
+      noteEl.textContent = 'Clicks/mo confirmed after keyword setup · $'+adSpend+' ad spend · $'+(b-adSpend)+' to you';
+    } else if (changedId === 'localsite') {
+      const impr = Math.round(b/(localsiteCpm||10)*1000);
+      noteEl.textContent = '~'+(impr/1000).toFixed(0)+'k impressions/mo · CPM: $'+(localsiteCpm||10);
+    } else if (p && (p.repNote || p.impressionNote)) {
+      noteEl.textContent = (p.repNote||p.impressionNote)(b);
+    }
   }
+
+  // Update tally
   bundleRefreshSliders();
 }
 
@@ -1311,6 +2048,21 @@ function bundleRefreshSliders() {
   bundleUpdateRemaining(total);
 }
 
+function bundleGetTotal() {
+  let total = 0;
+  bundleProducts.forEach(id => {
+    const p = PRODUCTS[id]; if (!p) return;
+    if (p.isEmail) total += bundleEmailPrice();
+    else if (id === 'audience') total += audienceConfig.price || 0;
+    else if (id === 'bestvo')   total += bestvoConfig.price || 0;
+    else if (id === 'website')  total += websiteConfig.price || 0;
+    else if (id === 'social')   total += socialConfig.price || 0;
+    else if (p.minPrice !== null) total += bundleBudgets[id] || 0;
+  });
+  bundleCustomItems.forEach(c => { total += c.price; });
+  return total;
+}
+
 function bundleUpdateRemaining(total) {
   const diff = bundleBudget - total;
   const remEl = document.getElementById('bundle-remaining');
@@ -1318,6 +2070,19 @@ function bundleUpdateRemaining(total) {
   if (diff > 0)       { remEl.textContent = '$' + diff.toLocaleString() + ' under'; remEl.className = 'bundle-tally-remaining bundle-tally-under'; }
   else if (diff < 0)  { remEl.textContent = '$' + Math.abs(diff).toLocaleString() + ' over';  remEl.className = 'bundle-tally-remaining bundle-tally-over'; }
   else                { remEl.textContent = 'exactly on budget'; remEl.className = 'bundle-tally-remaining bundle-tally-exact'; }
+  const bg = document.getElementById('bundle-commitment-grid');
+  if (bg) updateCommitmentBoxForGrid(bg, total);
+  updateROI();
+  // Update bundle sticky total
+  const bst = document.getElementById('bundle-sticky-total');
+  const bsd = document.getElementById('bundle-sticky-diff');
+  if (bst) bst.textContent = '$' + total.toLocaleString() + '/mo';
+  if (bsd) {
+    const diff = bundleBudget - total;
+    if (diff > 0)      { bsd.textContent = '($'+diff.toLocaleString()+' under)'; bsd.style.color = 'var(--text-dim)'; }
+    else if (diff < 0) { bsd.textContent = '($'+Math.abs(diff).toLocaleString()+' over)'; bsd.style.color = '#E24B4A'; }
+    else               { bsd.textContent = '(on budget)'; bsd.style.color = 'var(--accent)'; }
+  }
 }
 
 function bundleSetEmailTier(tier) { bundleEmailTier = tier; bundleRender(); }
@@ -1342,39 +2107,11 @@ function bundleRender() {
   } else {
     cardsEl.innerHTML = bundleProducts.map(id => {
       const p = PRODUCTS[id]; if (!p) return '';
-      let priceSection = '';
-      if (p.minPrice === null && !p.isEmail) {
-        priceSection = `<div class="price-fixed">see BPL rate card</div>`;
-      } else if (p.isEmail) {
-        const t = bundleEmailTier; const vol = bundleEmailVol; const ep = bundleEmailPrice();
-        priceSection = `
-          <div style="margin-top:10px;">
-            <div class="price-label" style="margin-bottom:6px;">Select list size</div>
-            <div class="btn-row" style="margin-bottom:8px;">
-              <button class="opt${t==='5k'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="bundleSetEmailTier('5k')">Up to 5k — $250/blast</button>
-              <button class="opt${t==='25k'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="bundleSetEmailTier('25k')">Up to 25k — $500/blast</button>
-              <button class="opt${t==='cpm'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="bundleSetEmailTier('cpm')">25k+ — $20 CPM</button>
-            </div>
-            ${t === 'cpm' ? `<div class="prod-slider-row"><input type="range" class="prod-slider" min="25000" max="200000" step="1000" value="${vol}" oninput="bundleEmailSlider(this.value)"><span id="bpe-vol">${vol.toLocaleString()} emails</span></div><div class="price-label" id="bpe-price">~$${ep.toLocaleString()}</div>` : `<div class="price-label">Retail: <strong style="color:var(--accent);">$${ep.toLocaleString()}</strong> per blast</div>`}
-          </div>`;
-      } else {
-        const cur = bundleBudgets[id] !== undefined ? bundleBudgets[id] : (p.minPrice || 0);
-        priceSection = `
-          <div class="prod-slider-row">
-            <input type="range" class="prod-slider" id="bpb-slider-${id}" min="0" max="${bundleBudget}" step="25" value="${cur}" oninput="bundleOnSlider('${id}', this.value)">
-            <span class="prod-slider-val" id="bpb-val-${id}">$${cur.toLocaleString()}</span>
-          </div>
-          <div class="price-label">est. retail/mo &nbsp;·&nbsp; rec. min $${p.minPrice.toLocaleString()} — drag to redistribute</div>`;
-      }
-      return `<div class="product-card">
-        <div class="product-card-top">
-          <div class="product-name">${p.name}<span class="engine-tag ${p.tag}">${p.engine}</span></div>
-          <button class="remove-btn" onclick="bundleRemoveProduct('${id}')" title="Remove">✕</button>
-        </div>
-        <div class="product-note">${p.clientDesc}</div>
-        ${p.impressionNote ? `<div class="price-label" style="margin-top:4px;color:var(--accent);opacity:0.8;">${p.impressionNote(bundleBudgets[id] || p.minPrice || 0)}</div>` : ''}
-        ${priceSection}
-      </div>`;
+      const cur = bundleBudgets[id] !== undefined ? bundleBudgets[id] : (p.minPrice || 0);
+      const sliderOnInput = id === 'dooh'
+        ? `const v=parseInt(this.value.replace(/[^0-9]/g,''))||0;bundleBudgets['dooh']=v;bundleRefreshSliders();`
+        : `bundleOnSlider('${id}', this.value)`;
+      return buildCardHTML(id, cur, bundleBudget, sliderOnInput, `bundleRemoveProduct('${id}')`, 'build');
     }).join('');
   }
 
@@ -1407,6 +2144,8 @@ function bundleRender() {
   bundleCustomItems.forEach(c => { total += c.price; });
   const totalEl = document.getElementById('bundle-total');
   if (totalEl) totalEl.textContent = '$' + total.toLocaleString();
+  const bst2 = document.getElementById('bundle-sticky-total');
+  if (bst2) bst2.textContent = '$' + total.toLocaleString() + '/mo';
   bundleUpdateRemaining(total);
 }
 
@@ -1434,7 +2173,7 @@ function bundleOpenSummary() {
     const price = p.isEmail ? bundleEmailPrice() : (bundleBudgets[id] !== undefined ? bundleBudgets[id] : p.minPrice);
     const isPerBlast = p.isEmail;
     const note = p.impressionNote ? p.impressionNote(price || 0) : null;
-    items.push({ name: p.name, desc: p.clientDesc, budget: price, noPrice: p.minPrice === null && !p.isEmail, isPerBlast, impressionNote: note });
+    items.push({ name: p.clientName || p.name, desc: p.clientDesc, budget: price, noPrice: p.minPrice === null && !p.isEmail, isPerBlast, impressionNote: note });
   });
   bundleCustomItems.forEach(c => {
     items.push({ name: c.name, desc: '', budget: c.price, noPrice: false, isPerBlast: false, impressionNote: null });
@@ -1448,7 +2187,7 @@ function bundleOpenSummary() {
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
         <strong style="font-size:14px;color:#1a1a18;">${item.name}</strong>
         <span style="font-size:13px;font-family:monospace;color:#1a6b5a;white-space:nowrap;margin-left:12px;">
-          ${item.noPrice ? 'Custom quote' : item.isPerBlast ? '~$'+item.budget.toLocaleString()+'/blast' : item.budget ? '~$'+item.budget.toLocaleString()+'/mo' : ''}
+          ${item.noPrice && !item.freeText ? 'Custom quote' : item.freeText ? item.freeText : item.isPerBlast ? '~$'+item.budget.toLocaleString()+'/blast' : item.budget ? '~$'+item.budget.toLocaleString()+'/mo' : ''}
         </span>
       </div>
       <p style="font-size:13px;color:#5c5b56;margin:0;line-height:1.6;">${item.desc || ''}</p>
@@ -1473,15 +2212,44 @@ function bundleOpenSummary() {
       <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:14px;">What's included</div>
       ${rows}
     </div>
+    ${(()=>{ return roiIncludeInSummary && roiEnabled && roiAvgTransaction && total ? `
+    <div style="background:#0d2e28;border-radius:12px;padding:20px 24px;margin-bottom:28px;color:#fff;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;color:#4DD4C0;margin-bottom:8px;">ROI / break-even estimate</div>
+      <p style="font-size:14px;color:#9ecec8;line-height:1.7;">To break even, you need approximately
+        <strong style="color:#2DD4BF;">${Math.ceil(total/roiAvgTransaction).toLocaleString()} new customers/mo</strong>
+        (~${Math.ceil(total/roiAvgTransaction/30)}/day) at $${roiAvgTransaction.toLocaleString()} avg transaction.</p>
+    </div>` : ''; })()}
+    ${(()=>{
+      const tierRows = [3,6,12].map(m => {
+        const disc = discountPct[m] || 0;
+        return '<div style="flex:1;min-width:140px;border:1px solid #e2e0d8;border-radius:8px;padding:12px 14px;">'
+          + '<div style="font-family:monospace;font-size:10px;text-transform:uppercase;color:#888;margin-bottom:4px;">'+m+'-month</div>'
+          + '<div style="font-size:20px;font-weight:600;color:#0d2e28;">$'+(total*m).toLocaleString()+'</div>'
+          + '<div style="font-size:11px;color:#aaa;margin-top:2px;">$'+total.toLocaleString()+'/mo × '+m+'</div>'
+          + (disc > 0 ? '<div style="font-size:11px;color:#1a6b5a;margin-top:4px;">+'+disc+'% added value included</div>' : '')
+          + '</div>';
+      }).join('');
+      return '<div style="margin-bottom:28px;"><div style="font-family:monospace;font-size:10px;text-transform:uppercase;color:#888;margin-bottom:12px;">Commitment options</div>'
+        + '<div style="display:flex;gap:10px;flex-wrap:wrap;">'+tierRows+'</div></div>';
+    })()}
     <div style="border-top:1px solid #e2e0d8;padding-top:16px;font-size:12px;color:#aaa;line-height:1.6;">
-      Pricing estimates are based on recommended minimums and are subject to final proposal.<br>
-      <strong style="color:#888;">${getPubName()} Digital Services</strong>
+      Pricing estimates are based on recommended minimums and are subject to final proposal.
     </div>
+    ${(()=>{
+      const lines = [];
+      if (repInfo.name)  lines.push(`<div style="font-weight:500;color:#1a1a18;">${repInfo.name}</div>`);
+      if (repInfo.email) lines.push(`<div><a href="mailto:${repInfo.email}" style="color:#1a6b5a;">${repInfo.email}</a></div>`);
+      if (repInfo.phone) lines.push(`<div>${repInfo.phone}</div>`);
+      return lines.length ? `<div style="margin-top:20px;padding-top:16px;border-top:1px solid #e2e0d8;">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;color:#888;margin-bottom:8px;">Your representative</div>
+        <div style="font-size:14px;color:#5c5b56;line-height:1.8;">${lines.join('')}</div>
+      </div>` : '';
+    })()}
   </div></body></html>`;
 
-  const w = window.open('', '_blank');
-  w.document.write(html);
-  w.document.close();
+  const blob = new Blob([html], {type: 'text/html'});
+  const url  = URL.createObjectURL(blob);
+  window.open(url, '_blank');
 }
 </script>
 </body>
