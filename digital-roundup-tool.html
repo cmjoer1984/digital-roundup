@@ -343,6 +343,48 @@
   .footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-dim); }
   .footer strong { color: var(--text-muted); }
 
+  /* Mode toggle */
+  .mode-toggle { display: flex; gap: 0; margin-bottom: 36px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .mode-btn { flex: 1; padding: 11px 16px; font-size: 13px; font-family: 'DM Sans', sans-serif; background: none; border: none; color: var(--text-muted); cursor: pointer; transition: all .18s; font-weight: 400; }
+  .mode-btn.active { background: var(--selected-bg); color: var(--accent); font-weight: 500; }
+  .mode-btn:first-child { border-right: 1px solid var(--border); }
+
+  /* Bundle builder */
+  .bundle-section { margin-bottom: 32px; }
+  .bundle-budget-row { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+  .bundle-budget-input { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; color: var(--accent); background: none; border: none; border-bottom: 1px solid var(--border); outline: none; width: 140px; padding: 4px 0; }
+  .bundle-budget-input:focus { border-bottom-color: var(--accent-border); }
+  .bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 520px) { .bundle-grid { grid-template-columns: 1fr; } }
+  .bundle-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 16px; cursor: pointer; transition: all .18s; position: relative;
+  }
+  .bundle-card:hover { border-color: var(--border-hover); }
+  .bundle-card.selected { background: var(--selected-bg); border-color: var(--selected-border); }
+  .bundle-card-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .bundle-card-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+  .bundle-card-price { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text-dim); margin-top: 6px; }
+  .bundle-check { width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--border); background: none; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; margin-right: 2px; }
+  .bundle-card.selected .bundle-check { background: var(--accent); border-color: var(--accent); color: var(--navy); }
+  .bundle-tally { position: sticky; bottom: 0; background: var(--navy); border-top: 1px solid var(--border); padding: 16px 0 20px; margin-top: 8px; }
+  .bundle-tally-inner { display: flex; justify-content: space-between; align-items: center; }
+  .bundle-tally-label { font-size: 13px; color: var(--text-muted); }
+  .bundle-tally-numbers { display: flex; align-items: baseline; gap: 16px; }
+  .bundle-tally-total { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; color: var(--accent); }
+  .bundle-tally-remaining { font-family: 'DM Mono', monospace; font-size: 13px; }
+  .bundle-tally-over { color: #E24B4A; }
+  .bundle-tally-under { color: var(--text-dim); }
+  .bundle-tally-exact { color: var(--accent); }
+  .bundle-custom-row { display: flex; gap: 8px; margin-top: 10px; }
+  .bundle-custom-input { flex: 1; }
+  .bundle-custom-price { width: 110px; }
+  .bundle-add-btn { padding: 8px 14px; border-radius: 7px; border: 1px solid var(--border); background: none; color: var(--text-muted); font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; white-space: nowrap; transition: all .15s; }
+  .bundle-add-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .bundle-custom-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-top: 8px; font-size: 13px; }
+  .bundle-custom-remove { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 12px; padding: 2px 4px; }
+  .bundle-custom-remove:hover { color: #E24B4A; }
+
   @media (max-width: 520px) {
     .page { padding: 32px 16px 60px; }
     .header h1 { font-size: 24px; }
@@ -353,11 +395,25 @@
 <div class="page">
 
   <div class="header">
-    <div class="header-eyebrow">Boone Newsmedia · Digital Services</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+      <input type="text" id="pub-name" value="Boone Newsmedia"
+        style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+               color:var(--accent);background:none;border:none;border-bottom:1px dashed var(--accent-border);
+               outline:none;padding:2px 4px;width:220px;"
+        title="Edit to white-label for your publication" oninput="document.getElementById('footer-pub').textContent=this.value+' Digital Services'">
+      <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);">· Digital Services</span>
+    </div>
     <h1>Digital RoundUp<br>Rep Tool</h1>
-    <p>Answer four questions to get a tailored product recommendation and estimated pricing.</p>
+    <p style="font-size:12px;color:var(--text-dim);margin-top:4px;">Edit the publication name above to white-label client summaries.</p>
   </div>
 
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="mode-rec" onclick="setMode('rec')">&#10024; Get a recommendation</button>
+    <button class="mode-btn" id="mode-build" onclick="setMode('build')">&#9881; Build your own bundle</button>
+  </div>
+
+  <div id="rec-mode">
+  <p style="font-size:14px;color:var(--text-muted);margin-bottom:28px;">Answer four questions to get a tailored product recommendation and estimated pricing.</p>
   <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
 
   <div id="questions">
@@ -379,11 +435,16 @@
 
     <div class="step">
       <div class="step-label">Step 2 of 4</div>
-      <div class="step-question">What's their primary goal right now?</div>
+      <div class="step-question">What's their main goal?</div>
       <div class="btn-row">
         <button class="opt" data-q="goal" data-v="awareness" onclick="pick(this)">Get seen / brand awareness</button>
+        <button class="opt" data-q="goal" data-v="foot_traffic" onclick="pick(this)">Drive foot traffic</button>
         <button class="opt" data-q="goal" data-v="leads" onclick="pick(this)">Capture leads</button>
-        <button class="opt" data-q="goal" data-v="both" onclick="pick(this)">Both</button>
+        <button class="opt" data-q="goal" data-v="contests" onclick="pick(this)">Contests / audience engagement</button>
+        <button class="opt" data-q="goal" data-v="email_list" onclick="pick(this)">Build email list</button>
+        <button class="opt" data-q="goal" data-v="social" onclick="pick(this)">Grow social following</button>
+        <button class="opt" data-q="goal" data-v="web_traffic" onclick="pick(this)">Increase website traffic</button>
+        <button class="opt" data-q="goal" data-v="recruit" onclick="pick(this)">Recruit / hiring</button>
         <button class="opt" data-q="goal" data-v="promo" onclick="pick(this)">Promote a sale or event</button>
       </div>
     </div>
@@ -416,8 +477,62 @@
   <hr class="divider">
   <div id="output"></div>
 
+  </div><!-- /rec-mode -->
+
+  <div id="bundle-mode" style="display:none;">
+    <div class="step" style="margin-bottom:28px;">
+      <div class="step-label">Budget</div>
+      <div class="step-question" style="margin-bottom:12px;">Approximate monthly budget?</div>
+      <div class="slider-wrap">
+        <div class="slider-row">
+          <input type="range" id="bundle-budget-slider" min="250" max="5000" step="50" value="1000" oninput="bundleSliderUpdate(this.value)">
+          <div class="slider-val" id="bundle-budget-display">$1,000/mo</div>
+        </div>
+        <div class="slider-ticks">
+          <span>$250</span><span>$1,250</span><span>$2,500</span><span>$3,750</span><span>$5,000+</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="bundle-cards-section">
+      <div class="rec-header">Your bundle</div>
+      <div class="product-cards" id="bundle-active-cards">
+        <p style="font-size:13px;color:var(--text-dim);padding:8px 0;">No products added yet — use the button below to start building.</p>
+      </div>
+
+      <div style="position:relative;margin-bottom:8px;">
+        <button class="add-product-btn" id="bundle-add-btn" onclick="bundleToggleDropdown()">+ Add a product</button>
+        <div class="add-product-dropdown" id="bundle-dropdown"></div>
+      </div>
+
+      <div class="bundle-section" style="margin-top:20px;">
+        <div class="step-label" style="margin-bottom:8px;">Add anything else (print, custom placement, etc.)</div>
+        <div class="bundle-custom-row">
+          <input type="text" class="type-input bundle-custom-input" id="bundle-custom-name" placeholder="Product or placement name">
+          <input type="text" class="type-input bundle-custom-price" id="bundle-custom-price" placeholder="$0/mo">
+          <button class="bundle-add-btn" onclick="bundleAddCustom()">+ Add</button>
+        </div>
+        <div id="bundle-custom-list"></div>
+      </div>
+    </div>
+
+    <div class="bundle-tally">
+      <div class="bundle-tally-inner">
+        <div>
+          <div class="bundle-tally-label">Monthly total</div>
+          <div class="bundle-tally-total" id="bundle-total">$0</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="bundle-tally-label">vs. budget</div>
+          <div class="bundle-tally-remaining" id="bundle-remaining">—</div>
+        </div>
+      </div>
+      <button class="summary-btn" style="margin-top:14px;width:100%;justify-content:center;" onclick="bundleOpenSummary()">&#9634; Generate client summary</button>
+    </div>
+  </div><!-- /bundle-mode -->
+
   <div class="footer">
-    <strong>Boone Newsmedia Digital Services</strong> — internal use only.<br>
+    <strong id="footer-pub">Boone Newsmedia Digital Services</strong> — internal use only.<br>
     Pricing estimates are ranges based on vendor rate cards. Final pricing subject to campaign setup. Updated 2025.
   </div>
 </div>
@@ -459,29 +574,57 @@ function reset() {
 // ── Product catalog ──────────────────────────────────────────────────
 const PRODUCTS = {
   dooh:       { name: 'DOOH — Vistar Media',           engine: 'Attention',  tag: 'tag-blue',   minPrice: 300,
-    impressionNote: (b) => { const screens = Math.max(1, Math.round(b / 150)); return `~${screens * 2}–${screens * 4}k screen plays/mo across ${screens}+ screens`; },
+    impressionNote: (b) => {
+      // Vistar is variable — conservative estimate ~$15–25 eCPM on avg
+      const imprLow  = Math.round(b / 25 * 1000 / 1000);   // at $25 eCPM
+      const imprHigh = Math.round(b / 15 * 1000 / 1000);   // at $15 eCPM
+      return `~${imprLow}k–${imprHigh}k screen impressions/mo (varies by market, screens & timing)`;
+    },
     clientDesc: 'Your brand on digital billboards and screens across the market — reaches people everywhere they go.' },
   simpli:     { name: 'Targeted Display — Simpli.fi',   engine: 'Frequency',  tag: 'tag-green',  minPrice: 250,
-    impressionNote: (b) => { const impr = Math.max(25000, Math.round(b / 10 * 1000)); return `~${(impr/1000).toFixed(0)}k targeted impressions/mo (min 25k)`; },
+    impressionNote: (b) => {
+      // Straight rate card math: $10 CPM retail
+      const impr = Math.max(25000, Math.round(b / 10 * 1000));
+      return `~${(impr/1000).toFixed(0)}k targeted impressions/mo at $10 CPM (min 25k)`;
+    },
     clientDesc: 'Targeted banner ads that follow your ideal customers around the web based on their browsing behavior and location.' },
   localsite:  { name: 'Local Site Ads',                 engine: 'Trust',      tag: 'tag-teal',   minPrice: 150,
-    impressionNote: (b) => `Placement on our local news sites — reach varies by publication`,
+    impressionNote: (b) => `Placement on trusted local news sites — impressions vary by publication and placement`,
     clientDesc: 'Display ads on our trusted local news sites — reaching engaged community members who already rely on us for information.' },
   prospect:   { name: 'Prospect ID — Lead Capture',     engine: 'Conversion', tag: 'tag-amber',  minPrice: 250,
-    impressionNote: (b) => { const leads = Math.max(100, Math.round(b * 0.6)); return `Est. ${leads}–${leads*2} identified leads/mo + 5-step email follow-up`; },
+    impressionNote: (b) => {
+      // Leads depend on site traffic, not budget — conservative estimate
+      return `Identifies anonymous site visitors as leads + triggers automated 5-email follow-up sequence`;
+    },
     clientDesc: 'Identifies visitors to your website by name, email, and buying intent — and automatically follows up with a personalized email sequence.' },
   fb:         { name: 'Facebook / Meta Ads',            engine: 'Social',     tag: 'tag-purple', minPrice: 200,
-    impressionNote: (b) => { const impr = Math.round(b / 0.012 / 1000); return `Est. ${impr}k–${impr*2}k impressions/mo depending on audience size`; },
+    impressionNote: (b) => {
+      // FB reach varies wildly — conservative $0.02–0.05 CPM equivalent for local audiences
+      const imprLow  = Math.round(b / 0.05 / 1000);  // conservative end
+      const imprHigh = Math.round(b / 0.02 / 1000);  // optimistic end
+      return `Est. ${imprLow}k–${imprHigh}k impressions/mo (FB reach varies — actual results may differ)`;
+    },
     clientDesc: 'Targeted ads on Facebook and Instagram reaching your ideal customers by demographics, interests, and location.' },
   email:      { name: 'Targeted Email — Site Impact',   engine: 'Reach',      tag: 'tag-purple', minPrice: null, isEmail: true,
     clientDesc: 'A targeted email blast sent to a curated list of local consumers who match your customer profile.' },
   sem:        { name: 'Search / SEM',                   engine: 'Intent',     tag: 'tag-green',  minPrice: 300,
-    impressionNote: (b) => { const clicks = Math.max(50, Math.round(b / 3)); return `Est. ${clicks}–${clicks*2} clicks/mo on high-intent local searches`; },
+    impressionNote: (b) => {
+      // Avg CPC for local markets ~$2–4; showing clicks not impressions since that's what matters
+      const clicksLow  = Math.round(b / 4);  // at $4 CPC
+      const clicksHigh = Math.round(b / 2);  // at $2 CPC
+      return `Est. ${clicksLow}–${clicksHigh} clicks/mo from high-intent local searches (varies by keywords & market)`;
+    },
     clientDesc: 'Google search ads that put your business at the top of results when local customers are actively searching for what you offer.' },
   web:        { name: 'Website — Beyond Private Label', engine: 'Foundation', tag: 'tag-teal',   minPrice: null,
     clientDesc: 'A professional, mobile-ready website built on WordPress — the foundation for your entire digital presence.' },
+  audience:   { name: 'Contests & Promotions — Audience.io', engine: 'Engagement', tag: 'tag-amber', minPrice: null,
+    impressionNote: (b) => `Surveys, polls, sweepstakes, photo contests, and sports brackets — great for list building and engagement`,
+    clientDesc: 'Interactive contests and promotions that drive engagement and capture audience data — surveys, polls, sweepstakes, photo contests, and sports brackets.' },
+  bestvo:     { name: 'Best Of / Readers Choice — Elite Insights', engine: 'Engagement', tag: 'tag-amber', minPrice: null,
+    impressionNote: (b) => `Annual or seasonal Readers Choice / Best Of contest drives community participation and sponsor visibility`,
+    clientDesc: 'A Readers Choice or Best Of contest that generates community buzz, drives ballot traffic, and creates sponsorship opportunities for winning businesses.' },
   newsletter: { name: 'Local Newsletter Sponsorship',   engine: 'Reach',      tag: 'tag-teal',   minPrice: 150,
-    impressionNote: (b) => `Sponsored placement in local email newsletters`,
+    impressionNote: (b) => `Sponsored placement in local email newsletters — open rates typically 20–35% of list size`,
     clientDesc: 'Sponsored placement in our local email newsletters, putting your brand in front of thousands of engaged subscribers.' },
 };
 
@@ -491,6 +634,8 @@ let removedProducts = {};
 let currentProducts = [];
 let customProducts = [];  // { id, name, price, desc }
 let printItem = { included: false, description: '', price: 0 };
+let audienceConfig = { contestType: '', price: 0 };
+let bestvoConfig   = { package: '', price: 0 };
 let emailConfig = { tier: '5k', volume: 25000 };  // tier: '5k' | '25k' | 'cpm'
 let dropdownOpen = false;
 
@@ -501,37 +646,109 @@ function recommend(s) {
   const hasSite   = s.site === 'yes';
   const hasFBOnly = s.site === 'fb';
   const needsSite = s.site === 'no';
-  const wantsLeads     = s.goal === 'leads' || s.goal === 'both';
-  const wantsAwareness = s.goal === 'awareness' || s.goal === 'both';
+  const wantsLeads     = s.goal === 'leads';
+  const wantsAwareness = s.goal === 'awareness';
   const isPromo        = s.goal === 'promo';
 
   const candidates = [];
   if (needsSite) candidates.push('web');
-  if (wantsAwareness || isPromo) candidates.push('dooh');
-  candidates.push('simpli'); candidates.push('localsite'); candidates.push('newsletter');
-  if (wantsLeads && hasSite) candidates.push('prospect');
-  if (['retail','event','restaurant'].includes(s.type) || hasFBOnly) candidates.push('fb');
-  if (['professional','medical','realestate','home','auto','restaurant'].includes(s.type)) candidates.push('sem');
-  if (isPromo || s.type === 'restaurant') candidates.push('email');
+
+  // Goal-driven logic — each goal maps to a tight, specific set
+  if (s.goal === 'awareness') {
+    if (b >= 300) candidates.push('dooh');
+    if (b >= 500) candidates.push('simpli');
+    candidates.push('localsite');
+    if (b >= 900) candidates.push('newsletter');
+
+  } else if (s.goal === 'foot_traffic') {
+    if (b >= 300) candidates.push('dooh');
+    candidates.push('localsite');
+    if (['retail','restaurant'].includes(s.type) || hasFBOnly) candidates.push('fb');
+    if (b >= 800) candidates.push('simpli');
+
+  } else if (s.goal === 'leads') {
+    if (hasSite) candidates.push('prospect');
+    candidates.push('audience');
+    if (b >= 700) candidates.push('fb');       // FB Lead Ads at higher budget only
+    if (b >= 600) candidates.push('simpli');   // drive traffic to the lead capture
+    if (b >= 900) candidates.push('localsite');
+
+  } else if (s.goal === 'contests') {
+    candidates.push('audience');
+    if (b >= 400) candidates.push('bestvo');
+    if (b >= 500) candidates.push('localsite'); // promote the contest
+    if (b >= 600) candidates.push('fb');
+    if (b >= 900) candidates.push('newsletter');
+    if (b >= 1100) candidates.push('simpli');
+
+  } else if (s.goal === 'email_list') {
+    candidates.push('email');
+    candidates.push('localsite');
+    if (b >= 600) candidates.push('simpli');
+
+  } else if (s.goal === 'social') {
+    candidates.push('fb');
+    if (b >= 500) candidates.push('localsite');
+    if (b >= 900) candidates.push('simpli');
+
+  } else if (s.goal === 'web_traffic') {
+    candidates.push('simpli');
+    candidates.push('sem');
+    if (b >= 600) candidates.push('localsite');
+
+  } else if (s.goal === 'recruit') {
+    candidates.push('simpli');
+    candidates.push('localsite');
+    if (b >= 700) candidates.push('sem');
+    if (b >= 900) candidates.push('newsletter');
+
+  } else if (s.goal === 'promo') {
+    candidates.push('localsite');
+    if (b >= 400) candidates.push('email');
+    if (b >= 500) candidates.push('simpli');
+    if (['retail','restaurant','event'].includes(s.type) || hasFBOnly) candidates.push('fb');
+    if (b >= 900) candidates.push('dooh');
+
+  } else {
+    // fallback
+    candidates.push('localsite');
+    if (b >= 500) candidates.push('simpli');
+  }
+
+  // Type nudges regardless of goal
+  if (['professional','medical','realestate','home','auto'].includes(s.type) && b >= 600 && !candidates.includes('sem')) {
+    // don't force sem in, just note it
+  }
 
   const seen = new Set();
   const deduped = candidates.filter(p => seen.has(p) ? false : seen.add(p)).filter(p => !(s.type === 'medical' && p === 'fb'));
 
-  // Gate products by budget — null-price items (web, email) always included if nominated
-  // but don't count against the budget. Everything else must fit.
+  // Gate products by budget.
+  // null-price items (web) only included if budget is effectively $0 — they're a prerequisite, not a paid product.
+  // isEmail only included if there's budget left after paid products.
+  // Everything else must fit within remaining budget at its minPrice.
   let remaining = b;
   const ps = [];
   for (const id of deduped) {
     const p = PRODUCTS[id];
-    if (p.minPrice === null || p.isEmail) { ps.push(id); continue; }
+    // null-price non-email products (web, audience, bestvo) always included if nominated — no budget consumed
+    if (p.minPrice === null && !p.isEmail) { ps.push(id); continue; }
+    if (p.isEmail) continue; // handled separately below
     if (remaining >= p.minPrice) { ps.push(id); remaining -= p.minPrice; }
   }
+  if (deduped.includes('email') && remaining >= 250) ps.push('email');
 
   if (needsSite)  notes.push('They need a website first — Prospect ID and retargeting both require one.');
   if (hasFBOnly)  notes.push('They only have a Facebook page — no Prospect ID or retargeting without a real site.');
   if (hasFBOnly && wantsLeads) notes.push('If lead capture is a priority, pitch a basic website as part of the package.');
   if (!hasSite && wantsLeads)  notes.push('Once a website is live, Prospect ID should be the first add-on.');
-  if (b < 600)    notes.push('Budget is tight — focus on one or two channels and prove value before expanding.');
+  if (wantsLeads && b >= 600)  notes.push('Facebook Lead Ads (lead generation campaign objective) collect contact info directly in-app — no website needed. Good add-on at this budget level.');
+  if (b < 500)    notes.push('Budget is tight — focus on one channel and prove value before expanding.');
+  if (s.goal === 'contests')   notes.push('Audience.io and Elite Insights pricing varies by package — contact ryan@audience.io and cody@eliteinsights.io for quotes. The digital products above are used to promote and drive traffic to the contest.');
+  if (s.goal === 'email_list') notes.push('Site Impact list rental gets the blast out — pair with local site ads to reinforce the message.');
+  if (s.goal === 'recruit')    notes.push('SEM on job-title + city keywords can be very effective. Consider LinkedIn if budget allows.');
+  if (s.goal === 'social')     notes.push('FB/Meta campaign objective should be set to Page Likes or Followers, not traffic.');
+  if (s.goal === 'web_traffic') notes.push('Make sure Google Analytics is set up before launching so they can see the lift.');
   if (s.type === 'restaurant') { notes.push('Build a full month of creatives upfront to schedule around specials and events.'); notes.push('SEM is a strong fit — "best [dish] near me" queries have immediate buying intent.'); }
   if (s.type === 'retail')     { notes.push('FB typically outperforms for visual/apparel — worth testing against display.'); if (isPromo) notes.push('For sales: swap creatives in existing placements + small budget bump + 1–2 Site Impact blasts.'); }
   if (s.type === 'auto')       notes.push('SEM is a strong fit — auto buyers are high-intent searchers.');
@@ -557,19 +774,26 @@ function initProductBudgets(products, totalBudget) {
     if (cp) return true;
     return PRODUCTS[id] && PRODUCTS[id].minPrice !== null && !PRODUCTS[id].isEmail;
   });
+
+  const printAlloc    = printItem.included ? (printItem.price || 0) : 0;
+  const audienceAlloc = products.includes('audience') ? (audienceConfig.price || 0) : 0;
+  const bestvoAlloc   = products.includes('bestvo')   ? (bestvoConfig.price || 0)   : 0;
+  // Email is handled separately; subtract any already-set product budgets
+  const alreadySet = products
+    .filter(id => productBudgets[id] !== undefined)
+    .reduce((s, id) => s + (productBudgets[id] || 0), 0);
+  const avail = Math.max(0, totalBudget - printAlloc - audienceAlloc - bestvoAlloc - alreadySet);
+
   if (adjustable.length === 0) return;
 
-  const printAlloc = printItem.included ? (printItem.price || 0) : 0;
-  const avail = Math.max(0, totalBudget - printAlloc);
-
-  // Scale all products proportionally so they sum to exactly avail
+  // Scale proportionally so paid products sum to exactly avail
   const totalMin = adjustable.reduce((sum, id) => {
     const cp = customProducts.find(c => c.id === id);
     return sum + (cp ? cp.price : PRODUCTS[id].minPrice);
   }, 0);
   const scale = totalMin > 0 ? avail / totalMin : 1;
 
-  // Assign proportional shares, give remainder to last item to avoid rounding drift
+  // Assign shares; last item absorbs rounding remainder
   let distributed = 0;
   adjustable.forEach((id, i) => {
     const cp = customProducts.find(c => c.id === id);
@@ -615,8 +839,15 @@ function refreshSliderUI() {
     const slEl  = document.getElementById('pb-slider-' + id);
     if (valEl) valEl.textContent = '$' + val.toLocaleString();
     if (slEl)  slEl.value = val;
+    // Update impression note live
+    const noteEl = document.getElementById('impr-note-' + id);
+    if (noteEl && PRODUCTS[id] && PRODUCTS[id].impressionNote) {
+      noteEl.textContent = PRODUCTS[id].impressionNote(val);
+    }
   });
   if (printItem.included) total += (printItem.price || 0);
+  if (currentProducts.includes('audience')) total += audienceConfig.price || 0;
+  if (currentProducts.includes('bestvo'))   total += bestvoConfig.price || 0;
   const el = document.getElementById('grand-total');
   if (el) el.textContent = '~$' + total.toLocaleString() + '/mo';
 }
@@ -682,6 +913,28 @@ function emailPrice() {
   return Math.round((emailConfig.volume / 1000) * 20 / 25) * 25;
 }
 
+// ── Audience.io handlers ─────────────────────────────────────────────
+function onAudienceType(val) { audienceConfig.contestType = val; }
+function onAudiencePrice(val) {
+  audienceConfig.price = parseInt(val.replace(/[^0-9]/g,'')) || 0;
+  // Update total
+  let total = 0;
+  currentProducts.filter(id => !removedProducts[id]).forEach(id => {
+    if (PRODUCTS[id].minPrice !== null || PRODUCTS[id].isEmail) total += productBudgets[id] || 0;
+    if (id === 'audience') total += audienceConfig.price;
+  });
+  if (printItem.included) total += printItem.price || 0;
+  const el = document.getElementById('grand-total');
+  if (el) el.textContent = '~$' + total.toLocaleString() + '/mo';
+}
+
+// ── Best Of handlers ─────────────────────────────────────────────────
+function onBestvoPackage(val) { bestvoConfig.package = val; }
+function onBestvoPrice(val) {
+  bestvoConfig.price = parseInt(val.replace(/[^0-9]/g,'')) || 0;
+  refreshSliderUI();
+}
+
 // ── Print item ───────────────────────────────────────────────────────
 function togglePrint(checked) {
   printItem.included = checked;
@@ -699,14 +952,22 @@ function onPrintPrice(val) {
 }
 
 // ── Client summary popup ─────────────────────────────────────────────
+function getPubName() {
+  return document.getElementById('pub-name')?.value.trim() || 'Boone Newsmedia';
+}
+
 function openSummary() {
   const activeProducts = currentProducts.filter(id => !removedProducts[id]);
   const activeCatalog = activeProducts.map(id => {
     const p = PRODUCTS[id];
-    const budget = (p.minPrice !== null || p.isEmail) ? productBudgets[id] : null;
+    const budget = id === 'audience' ? (audienceConfig.price || null) :
+                   id === 'bestvo'   ? (bestvoConfig.price || null) :
+                   (p.minPrice !== null || p.isEmail) ? productBudgets[id] : null;
+    const contestDesc = id === 'audience' && audienceConfig.contestType ? ` Contest: ${audienceConfig.contestType}.` :
+                        id === 'bestvo'   && bestvoConfig.package       ? ` Package: ${bestvoConfig.package}.` : '';
     const isPerBlast = p.isEmail;
     const impressionNote = p.impressionNote ? p.impressionNote(budget || 0) : null;
-    return { name: p.name, desc: p.clientDesc, budget, noPrice: p.minPrice === null && !p.isEmail, isPerBlast, impressionNote };
+    return { name: p.name, desc: p.clientDesc + contestDesc, budget, noPrice: (p.minPrice === null && !p.isEmail && id !== 'audience' && id !== 'bestvo') || (id === 'audience' && !audienceConfig.price) || (id === 'bestvo' && !bestvoConfig.price), isPerBlast, impressionNote };
   });
   const activeCustom = customProducts.filter(cp => !removedProducts[cp.id]).map(cp => ({
     name: cp.name, desc: cp.desc || '', budget: productBudgets[cp.id] || 0, noPrice: false
@@ -748,9 +1009,9 @@ function openSummary() {
   </head><body><div class="page">
     <button class="print-btn" onclick="window.print()">⎙ Print / Save as PDF</button>
     <div style="border-bottom:2px solid #1a1a18;padding-bottom:20px;margin-bottom:28px;">
-      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:8px;">Boone Newsmedia Digital Services</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:8px;">${getPubName()} Digital Services</div>
       <h1 style="font-size:26px;font-weight:600;line-height:1.2;margin-bottom:4px;">Your Digital Growth Package</h1>
-      <p style="font-size:14px;color:#5c5b56;">${btype} · Prepared by Boone Newsmedia</p>
+      <p style="font-size:14px;color:#5c5b56;">${btype} · Prepared by ${getPubName()}</p>
     </div>
     <div style="background:#0d2e28;border-radius:12px;padding:20px 24px;margin-bottom:28px;color:#fff;">
       <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#4DD4C0;margin-bottom:6px;">Estimated monthly investment</div>
@@ -762,7 +1023,7 @@ function openSummary() {
     </div>
     <div style="border-top:1px solid #e2e0d8;padding-top:16px;font-size:12px;color:#aaa;line-height:1.6;">
       Pricing estimates are based on recommended minimums and are subject to final proposal. Contact your Boone Newsmedia representative for a formal quote.<br>
-      <strong style="color:#888;">Boone Newsmedia Digital Services</strong>
+      <strong style="color:#888;">${getPubName()} Digital Services</strong>
     </div>
   </div></body></html>`;
 
@@ -775,6 +1036,8 @@ function openSummary() {
 function render() {
   removedProducts = {}; productBudgets = {}; customProducts = [];
   printItem = { included: false, description: '', price: 0 };
+  audienceConfig = { contestType: '', price: 0 };
+  bestvoConfig   = { package: '', price: 0 };
   emailConfig = { tier: '5k', volume: 25000 };
   renderOutput();
 }
@@ -814,6 +1077,30 @@ function renderOutput() {
           </div>
           <div class="price-label" id="email-price-display" style="margin-top:4px;">~$${ep.toLocaleString()} retail</div>` : `
           <div class="price-label">Retail: <strong style="color:var(--accent);">$${ep.toLocaleString()}</strong> per blast &nbsp;·&nbsp; Wholesale: $${t==='5k'?'100':'250'}</div>`}
+        </div>`;
+    } else if (id === 'audience') {
+      priceSection = `
+        <div style="margin-top:10px;">
+          <div class="price-label" style="margin-bottom:4px;">Contest type</div>
+          <input type="text" class="type-input" placeholder="e.g. Ugliest couch, $500 Visa gift card giveaway..."
+            value="${audienceConfig.contestType}" oninput="onAudienceType(this.value)" style="margin-bottom:8px;">
+          <div class="price-label" style="margin-bottom:4px;">Monthly price</div>
+          <input type="text" class="type-input type-input-price" placeholder="$0"
+            value="${audienceConfig.price ? '$'+audienceConfig.price.toLocaleString() : ''}"
+            oninput="onAudiencePrice(this.value)">
+          <div class="price-label" style="margin-top:4px;">Contact ryan@audience.io for quote</div>
+        </div>`;
+    } else if (id === 'bestvo') {
+      priceSection = `
+        <div style="margin-top:10px;">
+          <div class="price-label" style="margin-bottom:4px;">Package / contest name</div>
+          <input type="text" class="type-input" placeholder="e.g. Best Of 2025, Readers Choice — Dining..."
+            value="${bestvoConfig.package}" oninput="onBestvoPackage(this.value)" style="margin-bottom:8px;">
+          <div class="price-label" style="margin-bottom:4px;">Package price</div>
+          <input type="text" class="type-input type-input-price" placeholder="$0"
+            value="${bestvoConfig.price ? '$'+bestvoConfig.price.toLocaleString() : ''}"
+            oninput="onBestvoPrice(this.value)">
+          <div class="price-label" style="margin-top:4px;">Contact cody@eliteinsights.io or brynn@eliteinsights.io</div>
         </div>`;
     } else if (p.minPrice === null) {
       priceSection = `<div class="price-fixed">see BPL rate card</div>`;
@@ -884,7 +1171,11 @@ function renderOutput() {
     </div>` : '';
 
   let totalEst = 0;
-  activeProducts.forEach(id => { if (PRODUCTS[id].minPrice !== null || PRODUCTS[id].isEmail) totalEst += productBudgets[id] || 0; });
+  activeProducts.forEach(id => {
+    if (id === 'audience') { totalEst += audienceConfig.price || 0; return; }
+    if (id === 'bestvo')   { totalEst += bestvoConfig.price || 0; return; }
+    if (PRODUCTS[id].minPrice !== null || PRODUCTS[id].isEmail) totalEst += productBudgets[id] || 0;
+  });
   if (printItem.included) totalEst += printItem.price || 0;
 
   const notesHtml = rec.notes.length
@@ -900,6 +1191,297 @@ function renderOutput() {
     <button class="summary-btn" onclick="openSummary()">⎙ Generate client summary</button>
     <br><button class="reset-btn" onclick="reset()">← Start over</button>
   `;
+}
+
+// ── Mode switching ────────────────────────────────────────────────────
+let currentMode = 'rec';
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('rec-mode').style.display    = mode === 'rec'   ? 'block' : 'none';
+  document.getElementById('bundle-mode').style.display = mode === 'build' ? 'block' : 'none';
+  document.getElementById('mode-rec').classList.toggle('active',   mode === 'rec');
+  document.getElementById('mode-build').classList.toggle('active', mode === 'build');
+  if (mode === 'build') bundleInit();
+}
+
+// ── Bundle builder state ──────────────────────────────────────────────
+let bundleProducts = [];       // ordered list of ids in the bundle
+let bundleBudgets  = {};       // id -> allocated $
+let bundleCustomItems = [];
+let bundleDropdownOpen = false;
+let bundleEmailTier = '5k';
+let bundleEmailVol  = 25000;
+let bundleBudget    = 1000;
+
+function bundleEmailPrice() {
+  if (bundleEmailTier === '5k')  return 250;
+  if (bundleEmailTier === '25k') return 500;
+  return Math.round((bundleEmailVol / 1000) * 20 / 25) * 25;
+}
+
+function bundleInit() {
+  bundleProducts = []; bundleBudgets = {}; bundleCustomItems = [];
+  bundleDropdownOpen = false; bundleEmailTier = '5k'; bundleEmailVol = 25000;
+  bundleBudget = 1000;
+  document.getElementById('bundle-budget-slider').value = 1000;
+  document.getElementById('bundle-budget-display').textContent = '$1,000/mo';
+  bundleRender();
+}
+
+function bundleSliderUpdate(val) {
+  bundleBudget = parseInt(val);
+  document.getElementById('bundle-budget-display').textContent = '$' + parseInt(val).toLocaleString() + (parseInt(val) >= 5000 ? '+' : '') + '/mo';
+  // Rebalance existing budgets
+  bundleRebalance();
+  bundleRender();
+}
+
+// Proportionally redistribute bundle budgets to fit bundleBudget
+function bundleRebalance() {
+  const ids = bundleProducts.filter(id => {
+    const p = PRODUCTS[id]; return p && p.minPrice !== null && !p.isEmail;
+  });
+  if (ids.length === 0) return;
+  const customTotal = bundleCustomItems.reduce((s, c) => s + c.price, 0);
+  const emailAlloc  = bundleProducts.includes('email') ? bundleEmailPrice() : 0;
+  const avail = Math.max(0, bundleBudget - customTotal - emailAlloc);
+  const totalMin = ids.reduce((s, id) => s + PRODUCTS[id].minPrice, 0);
+  const scale = totalMin > 0 ? avail / totalMin : 1;
+  let dist = 0;
+  ids.forEach((id, i) => {
+    if (i === ids.length - 1) { bundleBudgets[id] = Math.max(0, avail - dist); }
+    else { const s = Math.max(0, Math.round(PRODUCTS[id].minPrice * scale / 25) * 25); bundleBudgets[id] = s; dist += s; }
+  });
+}
+
+function bundleAddProduct(id) {
+  if (bundleProducts.includes(id)) return;
+  bundleProducts.push(id);
+  // Init budget for this product
+  if (PRODUCTS[id].minPrice !== null && !PRODUCTS[id].isEmail) {
+    bundleBudgets[id] = undefined;
+    bundleRebalance();
+  }
+  bundleDropdownOpen = false;
+  bundleRender();
+}
+
+function bundleRemoveProduct(id) {
+  bundleProducts = bundleProducts.filter(p => p !== id);
+  delete bundleBudgets[id];
+  bundleRebalance();
+  bundleRender();
+}
+
+function bundleOnSlider(changedId, newVal) {
+  bundleBudgets[changedId] = parseInt(newVal);
+  const others = bundleProducts.filter(id => id !== changedId && PRODUCTS[id] && PRODUCTS[id].minPrice !== null && !PRODUCTS[id].isEmail);
+  const customTotal = bundleCustomItems.reduce((s, c) => s + c.price, 0);
+  const emailAlloc  = bundleProducts.includes('email') ? bundleEmailPrice() : 0;
+  const remaining   = bundleBudget - parseInt(newVal) - customTotal - emailAlloc;
+  if (others.length === 0) { bundleRefreshSliders(); return; }
+  if (remaining <= 0) { others.forEach(id => { bundleBudgets[id] = 0; }); }
+  else {
+    const tc = others.reduce((s, id) => s + (bundleBudgets[id] || 0), 0);
+    let dist = 0;
+    others.forEach((id, i) => {
+      if (i === others.length - 1) { bundleBudgets[id] = Math.max(0, remaining - dist); }
+      else { const share = Math.max(0, Math.round((tc > 0 ? (bundleBudgets[id]/tc)*remaining : remaining/others.length) / 25)*25); bundleBudgets[id] = share; dist += share; }
+    });
+  }
+  bundleRefreshSliders();
+}
+
+function bundleRefreshSliders() {
+  let total = 0;
+  bundleProducts.forEach(id => {
+    const p = PRODUCTS[id]; if (!p) return;
+    if (p.isEmail) { total += bundleEmailPrice(); return; }
+    if (p.minPrice === null) return;
+    const val = bundleBudgets[id] || 0; total += val;
+    const valEl = document.getElementById('bpb-val-' + id);
+    const slEl  = document.getElementById('bpb-slider-' + id);
+    if (valEl) valEl.textContent = '$' + val.toLocaleString();
+    if (slEl)  slEl.value = val;
+  });
+  bundleCustomItems.forEach(c => { total += c.price; });
+  const el = document.getElementById('bundle-total');
+  if (el) el.textContent = '$' + total.toLocaleString();
+  bundleUpdateRemaining(total);
+}
+
+function bundleUpdateRemaining(total) {
+  const diff = bundleBudget - total;
+  const remEl = document.getElementById('bundle-remaining');
+  if (!remEl) return;
+  if (diff > 0)       { remEl.textContent = '$' + diff.toLocaleString() + ' under'; remEl.className = 'bundle-tally-remaining bundle-tally-under'; }
+  else if (diff < 0)  { remEl.textContent = '$' + Math.abs(diff).toLocaleString() + ' over';  remEl.className = 'bundle-tally-remaining bundle-tally-over'; }
+  else                { remEl.textContent = 'exactly on budget'; remEl.className = 'bundle-tally-remaining bundle-tally-exact'; }
+}
+
+function bundleSetEmailTier(tier) { bundleEmailTier = tier; bundleRender(); }
+function bundleEmailSlider(val) {
+  bundleEmailVol = parseInt(val);
+  const ep = bundleEmailPrice();
+  const ev = document.getElementById('bpe-vol'); if (ev) ev.textContent = parseInt(val).toLocaleString() + ' emails';
+  const ep2 = document.getElementById('bpe-price'); if (ep2) ep2.textContent = '~$' + ep.toLocaleString();
+  bundleRefreshSliders();
+}
+
+function bundleToggleDropdown() {
+  bundleDropdownOpen = !bundleDropdownOpen;
+  bundleRender();
+}
+
+function bundleRender() {
+  // Active product cards
+  const cardsEl = document.getElementById('bundle-active-cards');
+  if (bundleProducts.length === 0) {
+    cardsEl.innerHTML = '<p style="font-size:13px;color:var(--text-dim);padding:8px 0;">No products added yet — use the button below to start building.</p>';
+  } else {
+    cardsEl.innerHTML = bundleProducts.map(id => {
+      const p = PRODUCTS[id]; if (!p) return '';
+      let priceSection = '';
+      if (p.minPrice === null && !p.isEmail) {
+        priceSection = `<div class="price-fixed">see BPL rate card</div>`;
+      } else if (p.isEmail) {
+        const t = bundleEmailTier; const vol = bundleEmailVol; const ep = bundleEmailPrice();
+        priceSection = `
+          <div style="margin-top:10px;">
+            <div class="price-label" style="margin-bottom:6px;">Select list size</div>
+            <div class="btn-row" style="margin-bottom:8px;">
+              <button class="opt${t==='5k'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="bundleSetEmailTier('5k')">Up to 5k — $250/blast</button>
+              <button class="opt${t==='25k'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="bundleSetEmailTier('25k')">Up to 25k — $500/blast</button>
+              <button class="opt${t==='cpm'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="bundleSetEmailTier('cpm')">25k+ — $20 CPM</button>
+            </div>
+            ${t === 'cpm' ? `<div class="prod-slider-row"><input type="range" class="prod-slider" min="25000" max="200000" step="1000" value="${vol}" oninput="bundleEmailSlider(this.value)"><span id="bpe-vol">${vol.toLocaleString()} emails</span></div><div class="price-label" id="bpe-price">~$${ep.toLocaleString()}</div>` : `<div class="price-label">Retail: <strong style="color:var(--accent);">$${ep.toLocaleString()}</strong> per blast</div>`}
+          </div>`;
+      } else {
+        const cur = bundleBudgets[id] !== undefined ? bundleBudgets[id] : (p.minPrice || 0);
+        priceSection = `
+          <div class="prod-slider-row">
+            <input type="range" class="prod-slider" id="bpb-slider-${id}" min="0" max="${bundleBudget}" step="25" value="${cur}" oninput="bundleOnSlider('${id}', this.value)">
+            <span class="prod-slider-val" id="bpb-val-${id}">$${cur.toLocaleString()}</span>
+          </div>
+          <div class="price-label">est. retail/mo &nbsp;·&nbsp; rec. min $${p.minPrice.toLocaleString()} — drag to redistribute</div>`;
+      }
+      return `<div class="product-card">
+        <div class="product-card-top">
+          <div class="product-name">${p.name}<span class="engine-tag ${p.tag}">${p.engine}</span></div>
+          <button class="remove-btn" onclick="bundleRemoveProduct('${id}')" title="Remove">✕</button>
+        </div>
+        <div class="product-note">${p.clientDesc}</div>
+        ${p.impressionNote ? `<div class="price-label" style="margin-top:4px;color:var(--accent);opacity:0.8;">${p.impressionNote(bundleBudgets[id] || p.minPrice || 0)}</div>` : ''}
+        ${priceSection}
+      </div>`;
+    }).join('');
+  }
+
+  // Dropdown of unused products
+  const unused = Object.keys(PRODUCTS).filter(id => !bundleProducts.includes(id));
+  const ddEl = document.getElementById('bundle-dropdown');
+  ddEl.className = 'add-product-dropdown' + (bundleDropdownOpen ? ' open' : '');
+  ddEl.innerHTML = unused.length === 0
+    ? '<div class="add-product-option" style="cursor:default;color:var(--text-dim);">All products added</div>'
+    : unused.map(id => `<div class="add-product-option" onclick="bundleAddProduct('${id}')"><span>${PRODUCTS[id].name}</span><span>${PRODUCTS[id].engine}</span></div>`).join('');
+
+  // Custom items list
+  const clEl = document.getElementById('bundle-custom-list');
+  if (clEl) clEl.innerHTML = bundleCustomItems.map(c => `
+    <div class="bundle-custom-item">
+      <span>${c.name}</span>
+      <span style="display:flex;align-items:center;gap:10px;">
+        <span style="font-family:monospace;font-size:13px;color:var(--accent);">$${c.price.toLocaleString()}/mo</span>
+        <button class="bundle-custom-remove" onclick="bundleRemoveCustom('${c.id}')">✕</button>
+      </span>
+    </div>`).join('');
+
+  // Tally
+  let total = 0;
+  bundleProducts.forEach(id => {
+    const p = PRODUCTS[id]; if (!p) return;
+    if (p.isEmail) total += bundleEmailPrice();
+    else if (p.minPrice !== null) total += bundleBudgets[id] || 0;
+  });
+  bundleCustomItems.forEach(c => { total += c.price; });
+  const totalEl = document.getElementById('bundle-total');
+  if (totalEl) totalEl.textContent = '$' + total.toLocaleString();
+  bundleUpdateRemaining(total);
+}
+
+function bundleAddCustom() {
+  const name = document.getElementById('bundle-custom-name').value.trim();
+  const price = parseInt(document.getElementById('bundle-custom-price').value.replace(/[^0-9]/g,'')) || 0;
+  if (!name) return;
+  bundleCustomItems.push({ id: 'custom-' + Date.now(), name, price });
+  document.getElementById('bundle-custom-name').value = '';
+  document.getElementById('bundle-custom-price').value = '';
+  bundleRender();
+  bundleRefreshSliders();
+}
+
+function bundleRemoveCustom(id) {
+  bundleCustomItems = bundleCustomItems.filter(c => c.id !== id);
+  bundleRender();
+  bundleRefreshSliders();
+}
+
+function bundleOpenSummary() {
+  const items = [];
+  bundleProducts.forEach(id => {
+    const p = PRODUCTS[id]; if (!p) return;
+    const price = p.isEmail ? bundleEmailPrice() : (bundleBudgets[id] !== undefined ? bundleBudgets[id] : p.minPrice);
+    const isPerBlast = p.isEmail;
+    const note = p.impressionNote ? p.impressionNote(price || 0) : null;
+    items.push({ name: p.name, desc: p.clientDesc, budget: price, noPrice: p.minPrice === null && !p.isEmail, isPerBlast, impressionNote: note });
+  });
+  bundleCustomItems.forEach(c => {
+    items.push({ name: c.name, desc: '', budget: c.price, noPrice: false, isPerBlast: false, impressionNote: null });
+  });
+
+  let total = 0;
+  items.forEach(i => { if (i.budget && !i.noPrice) total += i.budget; });
+
+  const rows = items.map(item => `
+    <div style="border:1px solid #e2e0d8;border-radius:10px;padding:16px 20px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <strong style="font-size:14px;color:#1a1a18;">${item.name}</strong>
+        <span style="font-size:13px;font-family:monospace;color:#1a6b5a;white-space:nowrap;margin-left:12px;">
+          ${item.noPrice ? 'Custom quote' : item.isPerBlast ? '~$'+item.budget.toLocaleString()+'/blast' : item.budget ? '~$'+item.budget.toLocaleString()+'/mo' : ''}
+        </span>
+      </div>
+      <p style="font-size:13px;color:#5c5b56;margin:0;line-height:1.6;">${item.desc || ''}</p>
+      ${item.impressionNote ? `<p style="font-size:12px;color:#1a6b5a;margin:6px 0 0;">${item.impressionNote}</p>` : ''}
+    </div>`).join('');
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>Digital Package — Boone Newsmedia</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'DM Sans',sans-serif;background:#f7f6f2;color:#1a1a18;padding:40px 24px;}.page{max-width:640px;margin:0 auto;}@media print{body{background:#fff;padding:20px;}@page{margin:1.5cm;}.print-btn{display:none!important;}}</style>
+  </head><body><div class="page">
+    <button class="print-btn" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;border:1px solid #d0cfc7;background:#fff;font-size:13px;cursor:pointer;color:#5c5b56;margin-bottom:32px;" onclick="window.print()">⎙ Print / Save as PDF</button>
+    <div style="border-bottom:2px solid #1a1a18;padding-bottom:20px;margin-bottom:28px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:8px;">${getPubName()} Digital Services</div>
+      <h1 style="font-size:26px;font-weight:600;line-height:1.2;margin-bottom:4px;">Your Digital Growth Package</h1>
+    </div>
+    <div style="background:#0d2e28;border-radius:12px;padding:20px 24px;margin-bottom:28px;color:#fff;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#4DD4C0;margin-bottom:6px;">Estimated monthly investment</div>
+      <div style="font-size:32px;font-weight:600;font-family:'DM Mono',monospace;color:#2DD4BF;">~$${total.toLocaleString()}<span style="font-size:16px;font-weight:400;color:#9ecec8;">/mo</span></div>
+    </div>
+    <div style="margin-bottom:28px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:14px;">What's included</div>
+      ${rows}
+    </div>
+    <div style="border-top:1px solid #e2e0d8;padding-top:16px;font-size:12px;color:#aaa;line-height:1.6;">
+      Pricing estimates are based on recommended minimums and are subject to final proposal.<br>
+      <strong style="color:#888;">${getPubName()} Digital Services</strong>
+    </div>
+  </div></body></html>`;
+
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
 }
 </script>
 </body>
