@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital RoundUp — Rep Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --navy-mid: #1A2E42;
+    --navy-light: #243B55;
+    --accent: #2DD4BF;
+    --accent-dim: rgba(45,212,191,0.12);
+    --accent-border: rgba(45,212,191,0.3);
+    --text: #E8EDF2;
+    --text-muted: #8A9BB0;
+    --text-dim: #536070;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.15);
+    --card: rgba(255,255,255,0.04);
+    --card-hover: rgba(255,255,255,0.07);
+    --selected-bg: rgba(45,212,191,0.12);
+    --selected-border: rgba(45,212,191,0.5);
+    --pill-blue: #1E3A5F;
+    --pill-blue-text: #7DC4F7;
+    --pill-green: #1A3A2A;
+    --pill-green-text: #6EE0A0;
+    --pill-amber: #3A2A10;
+    --pill-amber-text: #F5C84A;
+    --pill-purple: #2A1A4A;
+    --pill-purple-text: #C4A8F7;
+    --pill-teal: #0D2D28;
+    --pill-teal-text: #4DD4C0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(45,212,191,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(29,78,216,0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* Header */
+  .header { margin-bottom: 48px; }
+  .header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .header p { color: var(--text-muted); font-size: 14px; }
+
+  /* Progress bar */
+  .progress-bar {
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width .4s ease;
+  }
+
+  /* Steps */
+  .step { margin-bottom: 36px; opacity: 0; transform: translateY(12px); animation: fadeUp .4s ease forwards; }
+  .step:nth-child(1) { animation-delay: .05s; }
+  .step:nth-child(2) { animation-delay: .10s; }
+  .step:nth-child(3) { animation-delay: .15s; }
+  .step:nth-child(4) { animation-delay: .20s; }
+  .step:nth-child(5) { animation-delay: .25s; }
+
+  @keyframes fadeUp { to { opacity: 1; transform: none; } }
+
+  .step-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .step-question { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 12px; }
+
+  .btn-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  button.opt {
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all .18s ease;
+    font-weight: 400;
+  }
+  button.opt:hover {
+    border-color: var(--border-hover);
+    background: var(--card-hover);
+    color: var(--text);
+  }
+  button.opt.selected {
+    background: var(--selected-bg);
+    border-color: var(--selected-border);
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* Budget slider */
+  .slider-wrap { padding: 4px 0 8px; }
+  .slider-row { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+  input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 2px solid var(--navy);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+    transition: box-shadow .2s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 0 6px var(--accent-dim);
+  }
+  .slider-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--accent);
+    min-width: 80px;
+    text-align: right;
+  }
+  .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Product card interactive controls */
+  /* Product card interactive controls */
+  .product-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3px; }
+  .remove-btn {
+    background: none; border: none; color: var(--text-dim); cursor: pointer;
+    font-size: 12px; padding: 2px 4px; line-height: 1; border-radius: 4px;
+    transition: color .15s, background .15s; flex-shrink: 0; margin-left: 8px;
+  }
+  .remove-btn:hover { color: #E24B4A; background: rgba(226,75,74,0.1); }
+  .prod-slider-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  input.prod-slider {
+    flex: 1; -webkit-appearance: none; height: 3px;
+    background: var(--border); border-radius: 2px; outline: none;
+  }
+  input.prod-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 14px;
+    border-radius: 50%; background: var(--accent); cursor: pointer;
+    border: 2px solid var(--navy); transition: box-shadow .2s;
+  }
+  input.prod-slider::-webkit-slider-thumb:hover { box-shadow: 0 0 0 4px var(--accent-dim); }
+  .prod-slider-val {
+    font-family: 'DM Mono', monospace; font-size: 13px;
+    color: var(--accent); min-width: 60px; text-align: right;
+  }
+  .price-fixed { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+  .removed-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .removed-label { font-size: 12px; color: var(--text-dim); }
+  .restore-btn {
+    font-size: 12px; font-family: 'DM Sans', sans-serif;
+    padding: 4px 10px; border-radius: 6px; cursor: pointer;
+    border: 1px dashed var(--border-hover); background: none;
+    color: var(--text-muted); transition: all .15s;
+  }
+  .restore-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Typeable inputs */
+  .type-input {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    border-radius: 6px; padding: 7px 10px; font-size: 13px; font-family: 'DM Sans', sans-serif;
+    color: var(--text); outline: none; transition: border-color .15s;
+  }
+  .type-input:focus { border-color: var(--accent-border); }
+  .type-input::placeholder { color: var(--text-dim); }
+  .type-input-price { width: 140px; font-family: 'DM Mono', monospace; }
+
+  /* Add product */
+  .add-product-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border-radius: 8px; font-size: 13px;
+    font-family: 'DM Sans', sans-serif; cursor: pointer;
+    border: 1px dashed var(--border-hover); background: none;
+    color: var(--text-muted); transition: all .18s; width: 100%;
+    justify-content: center; margin-top: 4px;
+  }
+  .add-product-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .add-product-dropdown {
+    background: var(--navy-mid); border: 1px solid var(--border-hover);
+    border-radius: 10px; padding: 8px; margin-top: 8px; display: none;
+  }
+  .add-product-dropdown.open { display: block; }
+  .add-product-option {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;
+    color: var(--text-muted); transition: background .15s, color .15s;
+  }
+  .add-product-option:hover { background: var(--card-hover); color: var(--text); }
+  .add-product-option span { font-size: 11px; color: var(--text-dim); }
+
+  /* Summary button */
+  .summary-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 20px; padding: 10px 20px; border-radius: 8px;
+    font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer;
+    border: 1px solid var(--accent-border); background: var(--accent-dim);
+    color: var(--accent); transition: all .18s; font-weight: 500;
+  }
+  .summary-btn:hover { background: rgba(45,212,191,0.2); }
+
+  /* Divider */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 8px 0 32px; }
+
+  /* Results */
+  #output { animation: fadeUp .35s ease forwards; }
+
+  .rec-header {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .product-cards { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+
+  .product-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    transition: border-color .2s;
+  }
+  .product-card:hover { border-color: var(--border-hover); }
+  .product-name { font-weight: 500; font-size: 14px; color: var(--text); margin-bottom: 3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  .engine-tag {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: .06em;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 400;
+  }
+  .tag-blue   { background: var(--pill-blue);   color: var(--pill-blue-text); }
+  .tag-green  { background: var(--pill-green);  color: var(--pill-green-text); }
+  .tag-teal   { background: var(--pill-teal);   color: var(--pill-teal-text); }
+  .tag-amber  { background: var(--pill-amber);  color: var(--pill-amber-text); }
+  .tag-purple { background: var(--pill-purple); color: var(--pill-purple-text); }
+
+  .product-note { font-size: 12px; color: var(--text-muted); }
+  .price-label { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+  /* Total */
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 16px 20px;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  .total-label { font-size: 13px; color: var(--text-muted); }
+  .total-val { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; color: var(--accent); }
+
+  /* Notes */
+  .notes-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 16px;
+  }
+  .notes-title { font-size: 11px; font-family: 'DM Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+  .notes-box ul { padding-left: 16px; }
+  .notes-box li { font-size: 13px; color: var(--text-muted); margin-bottom: 5px; line-height: 1.5; }
+
+  .reset-btn {
+    margin-top: 24px;
+    display: inline-block;
+    font-size: 12px;
+    color: var(--text-dim);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .reset-btn:hover { color: var(--text-muted); }
+
+  .footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-dim); }
+  .footer strong { color: var(--text-muted); }
+
+  @media (max-width: 520px) {
+    .page { padding: 32px 16px 60px; }
+    .header h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-eyebrow">Boone Newsmedia · Digital Services</div>
+    <h1>Digital RoundUp<br>Rep Tool</h1>
+    <p>Answer four questions to get a tailored product recommendation and estimated pricing.</p>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+  <div id="questions">
+    <div class="step">
+      <div class="step-label">Step 1 of 4</div>
+      <div class="step-question">What type of business is this?</div>
+      <div class="btn-row">
+        <button class="opt" data-q="type" data-v="retail" onclick="pick(this)">Retail / boutique</button>
+        <button class="opt" data-q="type" data-v="restaurant" onclick="pick(this)">Restaurant / food &amp; beverage</button>
+        <button class="opt" data-q="type" data-v="professional" onclick="pick(this)">Professional services</button>
+        <button class="opt" data-q="type" data-v="auto" onclick="pick(this)">Auto dealer / service</button>
+        <button class="opt" data-q="type" data-v="medical" onclick="pick(this)">Medical / healthcare</button>
+        <button class="opt" data-q="type" data-v="event" onclick="pick(this)">Event / nonprofit / entertainment</button>
+        <button class="opt" data-q="type" data-v="realestate" onclick="pick(this)">Real estate</button>
+        <button class="opt" data-q="type" data-v="home" onclick="pick(this)">Home services / contractor</button>
+        <button class="opt" data-q="type" data-v="other" onclick="pick(this)">Other</button>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-label">Step 2 of 4</div>
+      <div class="step-question">What's their primary goal right now?</div>
+      <div class="btn-row">
+        <button class="opt" data-q="goal" data-v="awareness" onclick="pick(this)">Get seen / brand awareness</button>
+        <button class="opt" data-q="goal" data-v="leads" onclick="pick(this)">Capture leads</button>
+        <button class="opt" data-q="goal" data-v="both" onclick="pick(this)">Both</button>
+        <button class="opt" data-q="goal" data-v="promo" onclick="pick(this)">Promote a sale or event</button>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-label">Step 3 of 4</div>
+      <div class="step-question">Do they have a website?</div>
+      <div class="btn-row">
+        <button class="opt" data-q="site" data-v="yes" onclick="pick(this)">Yes</button>
+        <button class="opt" data-q="site" data-v="fb" onclick="pick(this)">No — just a Facebook page</button>
+        <button class="opt" data-q="site" data-v="no" onclick="pick(this)">No — needs one</button>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-label">Step 4 of 4</div>
+      <div class="step-question">Approximate monthly budget?</div>
+      <div class="slider-wrap">
+        <div class="slider-row">
+          <input type="range" id="budget-slider" min="250" max="5000" step="50" value="750" oninput="sliderUpdate(this.value)">
+          <div class="slider-val" id="budget-display">$750/mo</div>
+        </div>
+        <div class="slider-ticks">
+          <span>$250</span><span>$1,250</span><span>$2,500</span><span>$3,750</span><span>$5,000+</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div id="output"></div>
+
+  <div class="footer">
+    <strong>Boone Newsmedia Digital Services</strong> — internal use only.<br>
+    Pricing estimates are ranges based on vendor rate cards. Final pricing subject to campaign setup. Updated 2025.
+  </div>
+</div>
+
+<script>
+const state = { budget: 750 };
+const QUESTIONS = ['type','goal','site'];
+
+function sliderUpdate(val) {
+  state.budget = parseInt(val);
+  document.getElementById('budget-display').textContent = '$' + parseInt(val).toLocaleString() + (parseInt(val) >= 5000 ? '+' : '') + '/mo';
+  if (currentProducts.length) { productBudgets = {}; initProductBudgets(currentProducts.filter(p => !removedProducts[p]), state.budget); renderOutput(); }
+}
+
+function pick(btn) {
+  const q = btn.dataset.q;
+  document.querySelectorAll(`[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state[q] = btn.dataset.v;
+  updateProgress();
+  render();
+}
+
+function updateProgress() {
+  const filled = QUESTIONS.filter(k => state[k]).length;
+  document.getElementById('progress').style.width = (filled / QUESTIONS.length * 100) + '%';
+}
+
+function reset() {
+  QUESTIONS.forEach(k => delete state[k]);
+  state.budget = 750;
+  document.getElementById('budget-slider').value = 750;
+  document.getElementById('budget-display').textContent = '$750/mo';
+  document.querySelectorAll('button.opt').forEach(b => b.classList.remove('selected'));
+  document.getElementById('output').innerHTML = '';
+  updateProgress();
+}
+
+// ── Product catalog ──────────────────────────────────────────────────
+const PRODUCTS = {
+  dooh:       { name: 'DOOH — Vistar Media',           engine: 'Attention',  tag: 'tag-blue',   minPrice: 300,
+    impressionNote: (b) => { const screens = Math.max(1, Math.round(b / 150)); return `~${screens * 2}–${screens * 4}k screen plays/mo across ${screens}+ screens`; },
+    clientDesc: 'Your brand on digital billboards and screens across the market — reaches people everywhere they go.' },
+  simpli:     { name: 'Targeted Display — Simpli.fi',   engine: 'Frequency',  tag: 'tag-green',  minPrice: 250,
+    impressionNote: (b) => { const impr = Math.max(25000, Math.round(b / 10 * 1000)); return `~${(impr/1000).toFixed(0)}k targeted impressions/mo (min 25k)`; },
+    clientDesc: 'Targeted banner ads that follow your ideal customers around the web based on their browsing behavior and location.' },
+  localsite:  { name: 'Local Site Ads',                 engine: 'Trust',      tag: 'tag-teal',   minPrice: 150,
+    impressionNote: (b) => `Placement on our local news sites — reach varies by publication`,
+    clientDesc: 'Display ads on our trusted local news sites — reaching engaged community members who already rely on us for information.' },
+  prospect:   { name: 'Prospect ID — Lead Capture',     engine: 'Conversion', tag: 'tag-amber',  minPrice: 250,
+    impressionNote: (b) => { const leads = Math.max(100, Math.round(b * 0.6)); return `Est. ${leads}–${leads*2} identified leads/mo + 5-step email follow-up`; },
+    clientDesc: 'Identifies visitors to your website by name, email, and buying intent — and automatically follows up with a personalized email sequence.' },
+  fb:         { name: 'Facebook / Meta Ads',            engine: 'Social',     tag: 'tag-purple', minPrice: 200,
+    impressionNote: (b) => { const impr = Math.round(b / 0.012 / 1000); return `Est. ${impr}k–${impr*2}k impressions/mo depending on audience size`; },
+    clientDesc: 'Targeted ads on Facebook and Instagram reaching your ideal customers by demographics, interests, and location.' },
+  email:      { name: 'Targeted Email — Site Impact',   engine: 'Reach',      tag: 'tag-purple', minPrice: null, isEmail: true,
+    clientDesc: 'A targeted email blast sent to a curated list of local consumers who match your customer profile.' },
+  sem:        { name: 'Search / SEM',                   engine: 'Intent',     tag: 'tag-green',  minPrice: 300,
+    impressionNote: (b) => { const clicks = Math.max(50, Math.round(b / 3)); return `Est. ${clicks}–${clicks*2} clicks/mo on high-intent local searches`; },
+    clientDesc: 'Google search ads that put your business at the top of results when local customers are actively searching for what you offer.' },
+  web:        { name: 'Website — Beyond Private Label', engine: 'Foundation', tag: 'tag-teal',   minPrice: null,
+    clientDesc: 'A professional, mobile-ready website built on WordPress — the foundation for your entire digital presence.' },
+  newsletter: { name: 'Local Newsletter Sponsorship',   engine: 'Reach',      tag: 'tag-teal',   minPrice: 150,
+    impressionNote: (b) => `Sponsored placement in local email newsletters`,
+    clientDesc: 'Sponsored placement in our local email newsletters, putting your brand in front of thousands of engaged subscribers.' },
+};
+
+// ── State ────────────────────────────────────────────────────────────
+let productBudgets = {};
+let removedProducts = {};
+let currentProducts = [];
+let customProducts = [];  // { id, name, price, desc }
+let printItem = { included: false, description: '', price: 0 };
+let emailConfig = { tier: '5k', volume: 25000 };  // tier: '5k' | '25k' | 'cpm'
+let dropdownOpen = false;
+
+// ── Recommendation ───────────────────────────────────────────────────
+function recommend(s) {
+  const b = s.budget;
+  const notes = [];
+  const hasSite   = s.site === 'yes';
+  const hasFBOnly = s.site === 'fb';
+  const needsSite = s.site === 'no';
+  const wantsLeads     = s.goal === 'leads' || s.goal === 'both';
+  const wantsAwareness = s.goal === 'awareness' || s.goal === 'both';
+  const isPromo        = s.goal === 'promo';
+
+  const candidates = [];
+  if (needsSite) candidates.push('web');
+  if (wantsAwareness || isPromo) candidates.push('dooh');
+  candidates.push('simpli'); candidates.push('localsite'); candidates.push('newsletter');
+  if (wantsLeads && hasSite) candidates.push('prospect');
+  if (['retail','event','restaurant'].includes(s.type) || hasFBOnly) candidates.push('fb');
+  if (['professional','medical','realestate','home','auto','restaurant'].includes(s.type)) candidates.push('sem');
+  if (isPromo || s.type === 'restaurant') candidates.push('email');
+
+  const seen = new Set();
+  const deduped = candidates.filter(p => seen.has(p) ? false : seen.add(p)).filter(p => !(s.type === 'medical' && p === 'fb'));
+
+  // Gate products by budget — null-price items (web, email) always included if nominated
+  // but don't count against the budget. Everything else must fit.
+  let remaining = b;
+  const ps = [];
+  for (const id of deduped) {
+    const p = PRODUCTS[id];
+    if (p.minPrice === null || p.isEmail) { ps.push(id); continue; }
+    if (remaining >= p.minPrice) { ps.push(id); remaining -= p.minPrice; }
+  }
+
+  if (needsSite)  notes.push('They need a website first — Prospect ID and retargeting both require one.');
+  if (hasFBOnly)  notes.push('They only have a Facebook page — no Prospect ID or retargeting without a real site.');
+  if (hasFBOnly && wantsLeads) notes.push('If lead capture is a priority, pitch a basic website as part of the package.');
+  if (!hasSite && wantsLeads)  notes.push('Once a website is live, Prospect ID should be the first add-on.');
+  if (b < 600)    notes.push('Budget is tight — focus on one or two channels and prove value before expanding.');
+  if (s.type === 'restaurant') { notes.push('Build a full month of creatives upfront to schedule around specials and events.'); notes.push('SEM is a strong fit — "best [dish] near me" queries have immediate buying intent.'); }
+  if (s.type === 'retail')     { notes.push('FB typically outperforms for visual/apparel — worth testing against display.'); if (isPromo) notes.push('For sales: swap creatives in existing placements + small budget bump + 1–2 Site Impact blasts.'); }
+  if (s.type === 'auto')       notes.push('SEM is a strong fit — auto buyers are high-intent searchers.');
+  if (s.type === 'medical')    notes.push('Avoid FB for most medical clients — ad policy restrictions. Lean on SEM and display.');
+  if (s.type === 'realestate') notes.push('Prospect ID is high-value here — website visitors are warm buyers or sellers.');
+  if (s.type === 'home')       notes.push('SEM is essential — "plumber near me" searches have immediate buying intent.');
+  if (s.type === 'event')      notes.push('FB and newsletter sponsorships are strong for events and ticket-based businesses.');
+  return { products: ps, notes };
+}
+
+// ── Budget helpers ───────────────────────────────────────────────────
+function adjustableIds() {
+  const catalogIds = currentProducts.filter(id => !removedProducts[id] && PRODUCTS[id].minPrice !== null && !PRODUCTS[id].isEmail);
+  const customIds = customProducts.filter(cp => !removedProducts[cp.id]).map(cp => cp.id);
+  return [...catalogIds, ...customIds];
+}
+
+function initProductBudgets(products, totalBudget) {
+  // Adjustable = has a real minPrice, not isEmail, not already set
+  const adjustable = products.filter(id => {
+    if (productBudgets[id] !== undefined) return false;
+    const cp = customProducts.find(c => c.id === id);
+    if (cp) return true;
+    return PRODUCTS[id] && PRODUCTS[id].minPrice !== null && !PRODUCTS[id].isEmail;
+  });
+  if (adjustable.length === 0) return;
+
+  const printAlloc = printItem.included ? (printItem.price || 0) : 0;
+  const avail = Math.max(0, totalBudget - printAlloc);
+
+  // Scale all products proportionally so they sum to exactly avail
+  const totalMin = adjustable.reduce((sum, id) => {
+    const cp = customProducts.find(c => c.id === id);
+    return sum + (cp ? cp.price : PRODUCTS[id].minPrice);
+  }, 0);
+  const scale = totalMin > 0 ? avail / totalMin : 1;
+
+  // Assign proportional shares, give remainder to last item to avoid rounding drift
+  let distributed = 0;
+  adjustable.forEach((id, i) => {
+    const cp = customProducts.find(c => c.id === id);
+    const min = cp ? cp.price : PRODUCTS[id].minPrice;
+    if (i === adjustable.length - 1) {
+      productBudgets[id] = Math.max(0, avail - distributed);
+    } else {
+      const share = Math.round(min * scale / 25) * 25;
+      productBudgets[id] = Math.max(0, share);
+      distributed += productBudgets[id];
+    }
+  });
+}
+
+function onProductSlider(changedId, newVal) {
+  const printAlloc = printItem.included ? (printItem.price || 0) : 0;
+  const budget = state.budget - printAlloc;
+  productBudgets[changedId] = parseInt(newVal);
+  const others = adjustableIds().filter(id => id !== changedId);
+  const remaining = budget - parseInt(newVal);
+  if (others.length === 0) { refreshSliderUI(); return; }
+  if (remaining <= 0) { others.forEach(id => { productBudgets[id] = 0; }); }
+  else {
+    const totalOtherCurrent = others.reduce((s, id) => s + (productBudgets[id] || 0), 0);
+    let distributed = 0;
+    others.forEach((id, i) => {
+      if (i === others.length - 1) { productBudgets[id] = Math.max(0, remaining - distributed); }
+      else {
+        const share = totalOtherCurrent > 0 ? (productBudgets[id] / totalOtherCurrent) * remaining : remaining / others.length;
+        const rounded = Math.max(0, Math.round(share / 25) * 25);
+        productBudgets[id] = rounded; distributed += rounded;
+      }
+    });
+  }
+  refreshSliderUI();
+}
+
+function refreshSliderUI() {
+  let total = 0;
+  adjustableIds().forEach(id => {
+    const val = productBudgets[id] || 0; total += val;
+    const valEl = document.getElementById('pb-val-' + id);
+    const slEl  = document.getElementById('pb-slider-' + id);
+    if (valEl) valEl.textContent = '$' + val.toLocaleString();
+    if (slEl)  slEl.value = val;
+  });
+  if (printItem.included) total += (printItem.price || 0);
+  const el = document.getElementById('grand-total');
+  if (el) el.textContent = '~$' + total.toLocaleString() + '/mo';
+}
+
+function removeProduct(id) {
+  const freed = productBudgets[id] || 0;
+  removedProducts[id] = true; delete productBudgets[id];
+  const rem = adjustableIds();
+  if (rem.length > 0 && freed > 0) {
+    const tc = rem.reduce((s, rid) => s + (productBudgets[rid] || 0), 0);
+    let dist = 0;
+    rem.forEach((rid, i) => {
+      if (i === rem.length - 1) { productBudgets[rid] = Math.max(0, (productBudgets[rid]||0) + (freed - dist)); }
+      else { const add = Math.round((tc > 0 ? (productBudgets[rid]/tc)*freed : freed/rem.length) / 25)*25; productBudgets[rid] = Math.max(0,(productBudgets[rid]||0)+add); dist += add; }
+    });
+  }
+  renderOutput();
+}
+
+function restoreProduct(id) {
+  delete removedProducts[id]; productBudgets = {};
+  initProductBudgets([...currentProducts, ...customProducts.map(c=>c.id)].filter(p => !removedProducts[p]), state.budget);
+  renderOutput();
+}
+
+// ── Add product from unused list ─────────────────────────────────────
+function toggleDropdown() {
+  dropdownOpen = !dropdownOpen;
+  const dd = document.getElementById('add-dropdown');
+  if (dd) dd.classList.toggle('open', dropdownOpen);
+}
+
+function addProductFromList(id) {
+  if (!removedProducts[id]) removedProducts[id] = false;
+  delete removedProducts[id];
+  if (!currentProducts.includes(id)) currentProducts.push(id);
+  dropdownOpen = false;
+  productBudgets = {};
+  initProductBudgets(currentProducts.filter(p => !removedProducts[p]), state.budget);
+  renderOutput();
+}
+
+// ── Email tier handlers ──────────────────────────────────────────────
+function setEmailTier(tier) {
+  emailConfig.tier = tier;
+  const price = tier === '5k' ? 250 : tier === '25k' ? 500 : Math.round((emailConfig.volume / 1000) * 20 / 25) * 25;
+  productBudgets['email'] = price;
+  renderOutput();
+}
+
+function onEmailVolumeSlider(val) {
+  emailConfig.volume = parseInt(val);
+  const price = Math.round((parseInt(val) / 1000) * 20 / 25) * 25;
+  productBudgets['email'] = price;
+  document.getElementById('email-vol-display').textContent = parseInt(val).toLocaleString() + ' emails';
+  document.getElementById('email-price-display').textContent = '~$' + price.toLocaleString() + ' retail';
+  refreshSliderUI();
+}
+
+function emailPrice() {
+  if (emailConfig.tier === '5k') return 250;
+  if (emailConfig.tier === '25k') return 500;
+  return Math.round((emailConfig.volume / 1000) * 20 / 25) * 25;
+}
+
+// ── Print item ───────────────────────────────────────────────────────
+function togglePrint(checked) {
+  printItem.included = checked;
+  document.getElementById('print-fields').style.display = checked ? 'block' : 'none';
+  productBudgets = {};
+  initProductBudgets([...currentProducts, ...customProducts.map(c=>c.id)].filter(p => !removedProducts[p]), state.budget);
+  refreshSliderUI();
+}
+function onPrintDesc(val) { printItem.description = val; }
+function onPrintPrice(val) {
+  printItem.price = parseInt(val.replace(/[^0-9]/g,'')) || 0;
+  productBudgets = {};
+  initProductBudgets([...currentProducts, ...customProducts.map(c=>c.id)].filter(p => !removedProducts[p]), state.budget);
+  refreshSliderUI();
+}
+
+// ── Client summary popup ─────────────────────────────────────────────
+function openSummary() {
+  const activeProducts = currentProducts.filter(id => !removedProducts[id]);
+  const activeCatalog = activeProducts.map(id => {
+    const p = PRODUCTS[id];
+    const budget = (p.minPrice !== null || p.isEmail) ? productBudgets[id] : null;
+    const isPerBlast = p.isEmail;
+    const impressionNote = p.impressionNote ? p.impressionNote(budget || 0) : null;
+    return { name: p.name, desc: p.clientDesc, budget, noPrice: p.minPrice === null && !p.isEmail, isPerBlast, impressionNote };
+  });
+  const activeCustom = customProducts.filter(cp => !removedProducts[cp.id]).map(cp => ({
+    name: cp.name, desc: cp.desc || '', budget: productBudgets[cp.id] || 0, noPrice: false
+  }));
+  const allItems = [...activeCatalog, ...activeCustom];
+  if (printItem.included && printItem.description) {
+    allItems.push({ name: 'Print', desc: printItem.description, budget: printItem.price, noPrice: false });
+  }
+
+  let totalEst = 0;
+  allItems.forEach(item => { if (item.budget && !item.noPrice) totalEst += item.budget; });
+
+  const btype = { retail:'Retail / Boutique', restaurant:'Restaurant / F&B', professional:'Professional Services', auto:'Auto', medical:'Medical / Healthcare', event:'Event / Nonprofit', realestate:'Real Estate', home:'Home Services', other:'Business' }[state.type] || 'Business';
+
+  const rows = allItems.map(item => `
+    <div style="border:1px solid #e2e0d8;border-radius:10px;padding:16px 20px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <strong style="font-size:14px;color:#1a1a18;">${item.name}</strong>
+        <span style="font-size:13px;font-family:monospace;color:#1a6b5a;white-space:nowrap;margin-left:12px;">
+          ${item.noPrice ? 'Custom quote' : item.isPerBlast ? '~$'+item.budget.toLocaleString()+'/blast' : item.budget ? '~$'+item.budget.toLocaleString()+'/mo' : ''}
+        </span>
+      </div>
+      <p style="font-size:13px;color:#5c5b56;margin:0;line-height:1.6;">${item.desc || ''}</p>
+      ${item.impressionNote ? `<p style="font-size:12px;color:#1a6b5a;margin:6px 0 0;">${item.impressionNote}</p>` : ""}
+    </div>`).join('');
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>Digital Package — Boone Newsmedia</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:#f7f6f2;color:#1a1a18;padding:40px 24px;min-height:100vh;}
+    .page{max-width:640px;margin:0 auto;}
+    @media print{body{background:#fff;padding:20px;}@page{margin:1.5cm;}}
+    .print-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;border:1px solid #d0cfc7;background:#fff;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;color:#5c5b56;margin-bottom:32px;transition:background .15s;}
+    .print-btn:hover{background:#f0efe9;}
+    @media print{.print-btn{display:none;}}
+  </style>
+  </head><body><div class="page">
+    <button class="print-btn" onclick="window.print()">⎙ Print / Save as PDF</button>
+    <div style="border-bottom:2px solid #1a1a18;padding-bottom:20px;margin-bottom:28px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:8px;">Boone Newsmedia Digital Services</div>
+      <h1 style="font-size:26px;font-weight:600;line-height:1.2;margin-bottom:4px;">Your Digital Growth Package</h1>
+      <p style="font-size:14px;color:#5c5b56;">${btype} · Prepared by Boone Newsmedia</p>
+    </div>
+    <div style="background:#0d2e28;border-radius:12px;padding:20px 24px;margin-bottom:28px;color:#fff;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#4DD4C0;margin-bottom:6px;">Estimated monthly investment</div>
+      <div style="font-size:32px;font-weight:600;font-family:'DM Mono',monospace;color:#2DD4BF;">~$${totalEst.toLocaleString()}<span style="font-size:16px;font-weight:400;color:#9ecec8;">/mo</span></div>
+    </div>
+    <div style="margin-bottom:28px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:14px;">What's included</div>
+      ${rows}
+    </div>
+    <div style="border-top:1px solid #e2e0d8;padding-top:16px;font-size:12px;color:#aaa;line-height:1.6;">
+      Pricing estimates are based on recommended minimums and are subject to final proposal. Contact your Boone Newsmedia representative for a formal quote.<br>
+      <strong style="color:#888;">Boone Newsmedia Digital Services</strong>
+    </div>
+  </div></body></html>`;
+
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+}
+
+// ── Render ───────────────────────────────────────────────────────────
+function render() {
+  removedProducts = {}; productBudgets = {}; customProducts = [];
+  printItem = { included: false, description: '', price: 0 };
+  emailConfig = { tier: '5k', volume: 25000 };
+  renderOutput();
+}
+
+function renderOutput() {
+  const out = document.getElementById('output');
+  const rec = recommend(state);
+  currentProducts = [...new Set([...rec.products, ...currentProducts.filter(id => !rec.products.includes(id))])];
+  initProductBudgets([...currentProducts, ...customProducts.map(c=>c.id)].filter(p => !removedProducts[p]), state.budget);
+
+  const activeProducts = currentProducts.filter(id => !removedProducts[id]);
+  const removedCatalog = currentProducts.filter(id => removedProducts[id]);
+
+  // Catalog products not yet shown (for add dropdown)
+  const unusedCatalog = Object.keys(PRODUCTS).filter(id => !currentProducts.includes(id));
+
+  const cardHtml = activeProducts.map(id => {
+    const p = PRODUCTS[id];
+    let priceSection;
+    if (p.isEmail) {
+      const t = emailConfig.tier;
+      const vol = emailConfig.volume;
+      const ep = emailPrice();
+      productBudgets['email'] = ep;
+      priceSection = `
+        <div style="margin-top:10px;">
+          <div class="price-label" style="margin-bottom:6px;">Select list size</div>
+          <div class="btn-row" style="margin-bottom:10px;">
+            <button class="opt${t==='5k'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="setEmailTier('5k')">Up to 5,000 emails — $250/blast</button>
+            <button class="opt${t==='25k'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="setEmailTier('25k')">Up to 25,000 emails — $500/blast</button>
+            <button class="opt${t==='cpm'?' selected':''}" style="font-size:12px;padding:6px 12px;" onclick="setEmailTier('cpm')">25,000+ emails — $20/CPM</button>
+          </div>
+          ${t === 'cpm' ? `
+          <div class="prod-slider-row">
+            <input type="range" class="prod-slider" min="25000" max="200000" step="1000" value="${vol}" oninput="onEmailVolumeSlider(this.value)">
+            <span class="prod-slider-val" id="email-vol-display">${vol.toLocaleString()} emails</span>
+          </div>
+          <div class="price-label" id="email-price-display" style="margin-top:4px;">~$${ep.toLocaleString()} retail</div>` : `
+          <div class="price-label">Retail: <strong style="color:var(--accent);">$${ep.toLocaleString()}</strong> per blast &nbsp;·&nbsp; Wholesale: $${t==='5k'?'100':'250'}</div>`}
+        </div>`;
+    } else if (p.minPrice === null) {
+      priceSection = `<div class="price-fixed">see BPL rate card</div>`;
+    } else {
+      const cur = productBudgets[id] !== undefined ? productBudgets[id] : p.minPrice;
+      priceSection = `
+        <div class="prod-slider-row">
+          <input type="range" class="prod-slider" id="pb-slider-${id}" min="0" max="${state.budget}" step="25" value="${cur}" oninput="onProductSlider('${id}', this.value)">
+          <span class="prod-slider-val" id="pb-val-${id}">$${cur.toLocaleString()}</span>
+        </div>
+        <div class="price-label">est. retail/mo &nbsp;·&nbsp; rec. min $${p.minPrice.toLocaleString()} — drag to redistribute</div>`;
+    }
+    return `<div class="product-card" id="card-${id}">
+      <div class="product-card-top">
+        <div class="product-name">${p.name}<span class="engine-tag ${p.tag}">${p.engine}</span></div>
+        <button class="remove-btn" onclick="removeProduct('${id}')" title="Remove">✕</button>
+      </div>
+      <div class="product-note">${p.clientDesc}</div>
+      ${p.impressionNote ? `<div class="price-label" style="margin-top:4px;color:var(--accent);opacity:0.8;">${p.impressionNote(productBudgets[id] || p.minPrice || 0)}</div>` : ""}
+      ${priceSection}
+    </div>`;
+  }).join('');
+
+  const printChecked = printItem.included ? 'checked' : '';
+  const printCard = `
+    <div class="product-card">
+      <div class="product-card-top">
+        <div class="product-name">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" ${printChecked} onchange="togglePrint(this.checked)" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer;">
+            Print
+          </label>
+          <span class="engine-tag tag-purple">Add-on</span>
+        </div>
+      </div>
+      <div class="product-note">Include a print placement in this package.</div>
+      <div id="print-fields" style="display:${printItem.included?'block':'none'};margin-top:10px;">
+        <div style="margin-bottom:8px;">
+          <div class="price-label" style="margin-bottom:4px;">What's included</div>
+          <input type="text" class="type-input" placeholder="e.g. Full page, special section, 2×3 ad..." value="${printItem.description}" oninput="onPrintDesc(this.value)">
+        </div>
+        <div>
+          <div class="price-label" style="margin-bottom:4px;">Monthly price</div>
+          <input type="text" class="type-input type-input-price" placeholder="$0" value="${printItem.price ? '$'+printItem.price.toLocaleString() : ''}" oninput="onPrintPrice(this.value)">
+        </div>
+      </div>
+    </div>`;
+
+  // Add product button + dropdown
+  const ddOptions = unusedCatalog.length === 0 ? '<div class="add-product-option" style="cursor:default;color:var(--text-dim);">All products added</div>' :
+    unusedCatalog.map(id => `
+      <div class="add-product-option" onclick="addProductFromList('${id}')">
+        <span>${PRODUCTS[id].name}</span>
+        <span>${PRODUCTS[id].engine}</span>
+      </div>`).join('');
+
+  const addBtn = `
+    <div style="position:relative;">
+      <button class="add-product-btn" onclick="toggleDropdown()">+ Add another product</button>
+      <div class="add-product-dropdown ${dropdownOpen?'open':''}" id="add-dropdown">${ddOptions}</div>
+    </div>`;
+
+  // Removed pills
+  const removedHtml = removedCatalog.length ? `
+    <div class="removed-row">
+      <span class="removed-label">Removed:</span>
+      ${removedCatalog.map(id => `<button class="restore-btn" onclick="restoreProduct('${id}')">${PRODUCTS[id].name} +</button>`).join('')}
+    </div>` : '';
+
+  let totalEst = 0;
+  activeProducts.forEach(id => { if (PRODUCTS[id].minPrice !== null || PRODUCTS[id].isEmail) totalEst += productBudgets[id] || 0; });
+  if (printItem.included) totalEst += printItem.price || 0;
+
+  const notesHtml = rec.notes.length
+    ? `<div class="notes-box"><div class="notes-title">Rep notes</div><ul>${rec.notes.map(n=>`<li>${n}</li>`).join('')}</ul></div>` : '';
+
+  out.innerHTML = `
+    <div class="rec-header">Recommended for this client</div>
+    <div class="product-cards">${cardHtml}${printCard}</div>
+    ${addBtn}
+    ${removedHtml}
+    ${totalEst > 0 ? `<div class="total-row" style="margin-top:20px;"><span class="total-label">Estimated monthly total (retail)</span><span class="total-val" id="grand-total">~$${totalEst.toLocaleString()}/mo</span></div>` : ''}
+    ${notesHtml}
+    <button class="summary-btn" onclick="openSummary()">⎙ Generate client summary</button>
+    <br><button class="reset-btn" onclick="reset()">← Start over</button>
+  `;
+}
+</script>
+</body>
+</html>
